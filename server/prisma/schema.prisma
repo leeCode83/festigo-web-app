@@ -1,0 +1,160 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Model untuk pengguna (User)
+model User {
+  id          Int      @id @default(autoincrement())
+  email       String   @unique
+  password    String   @default("")   // Harus di-hash sebelum disimpan. Utk auth metode lain, pw bisa kosong
+  username    String   @unique
+  role        Role     @default(USER) // Role: USER atau ADMIN
+  avatarUrl   String   @default("")
+  provider    String?  // 'google', 'facebook', 'github', dll.
+  providerId  String?  // ID dari provider OAuth
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relasi
+  reviews     Review[] // Ulasan yang dibuat pengguna
+  threads     Thread[] // Thread forum yang dibuat pengguna
+  replies     Reply[]  // Balasan forum yang dibuat pengguna
+  replyLikes  ReplyLike[] // Like yang diberikan pengguna pada balasan
+  submissions EventSubmission[] // Event yang diajukan pengguna
+  bucketlist  Bucketlist[]
+}
+
+// Enum untuk role pengguna
+enum Role {
+  USER
+  ADMIN
+}
+
+// Model untuk event
+model Event {
+  id          Int      @id @default(autoincrement())
+  category    String?
+  title       String
+  description String
+  date        DateTime
+  location    String
+  image       String?  // URL atau path gambar
+  ticketUrl   String?  // URL eksternal untuk pembelian tiket
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relasi
+  reviews     Review[] // Ulasan untuk event ini
+  threads     Thread[] // Thread forum untuk event ini
+  like        Bucketlist[]
+}
+
+model Bucketlist{
+  id          Int      @id @default(autoincrement())
+  eventId     Int
+  userId      Int
+  createdAt   DateTime  @default(now())
+
+  //relasi
+  event       Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([userId, eventId])
+}
+
+// Model untuk ulasan (Review)
+model Review {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  eventId   Int
+  rating    Int      @default(0) // Skala 1-5
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relasi
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, eventId]) // Satu pengguna hanya bisa memberi satu ulasan per event
+}
+
+// Model untuk thread forum
+model Thread {
+  id        Int      @id @default(autoincrement())
+  eventId   Int
+  userId    Int
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relasi
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  replies   Reply[]  // Balasan dalam thread ini
+}
+
+// Model untuk balasan forum (Reply)
+model Reply {
+  id        Int      @id @default(autoincrement())
+  threadId  Int
+  userId    Int
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relasi
+  thread    Thread    @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  likes     ReplyLike[] // Like yang diberikan untuk balasan ini
+}
+
+// Model untuk like pada balasan
+model ReplyLike {
+  id        Int      @id @default(autoincrement())
+  replyId   Int
+  userId    Int
+  createdAt DateTime @default(now())
+
+  // Relasi
+  reply     Reply    @relation(fields: [replyId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([replyId, userId]) // Satu pengguna hanya bisa like satu kali per balasan
+}
+
+// Model untuk pengajuan event oleh pengguna
+model EventSubmission {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  title       String
+  description String
+  date        DateTime
+  location    String
+  image       String?  // Opsional
+  ticketUrl   String?  // Opsional
+  status      SubmissionStatus @default(PENDING) // PENDING, APPROVED, REJECTED
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relasi
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Enum untuk status pengajuan event
+enum SubmissionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
