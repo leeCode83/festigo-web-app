@@ -24,7 +24,7 @@ export class EventsController {
     } //Berhasil
 
     // Endpoint untuk mendapatkan event berdasarkan ID
-    @Get(':id')
+    @Get('id/:id')
     async getEventById(@Param('id') id: number) {
         return this.eventService.getEventById(Number(id));
     } //Berhasil
@@ -50,4 +50,14 @@ export class EventsController {
     async deleteEvent(@Param('id') id: string) {
         return this.eventService.deleteEvent(Number(id));
     } //Berhasil
+
+    @Get('popular')
+    async getPopularEventsCards() {
+        return this.eventService.getPopularEventsCards();
+    }
+
+    @Get('upcoming')
+    async getUpcomingEventCards(){
+        return this.eventService.getUpcomingEventsCards();
+    }
 }

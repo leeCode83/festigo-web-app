@@ -35,7 +35,7 @@ export class AuthService {
         });
 
         const token = this.generateToken({ id: user.id, email: user.email, role: user.role });
-        return {register_success: token};
+        return { token, username: user.username };
     }
 
     async login(dto: LoginDto) {
@@ -51,6 +51,6 @@ export class AuthService {
         if (!isPasswordValid) throw new UnauthorizedException('Invalid credentials');
 
         const token = this.generateToken({ id: user.id, email: user.email, role: user.role });
-        return { login_success: token };
+        return { token, username: user.username };
     }
 }

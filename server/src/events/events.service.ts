@@ -74,4 +74,44 @@ export class EventsService {
         await this.prisma.event.delete({ where: { id } });
         return { message: 'Event deleted successfully' };
     }
+
+    async getPopularEventsCards() {
+        const events = await this.prisma.event.findMany({
+            select: {
+                id: true,
+                image: true,
+                title: true,
+                reviews: { select: { rating: true } }, // Ambil semua rating
+                _count: { select: { like: true } }, // Ambil jumlah like
+                date: true
+            },
+            orderBy: {
+                like: { _count: 'desc' }, // Urutkan berdasarkan jumlah like
+            },
+            take: 20, // Ambil 20 event teratas
+        });
+
+        // Hitung rata-rata rating secara manual
+        return events.map(event => ({
+            id: event.id,
+            image: event.image,
+            title: event.title,
+            date: event.date,
+            like: event._count.like, // Ambil langsung nilai like tanpa _count
+            averageRating: event.reviews.length ? event.reviews.reduce((sum, r) => sum + r.rating, 0) / event.reviews.length : 0, // Jika tidak ada review, rating = 0
+        }));
+    }
+
+    async getUpcomingEventsCards() {
+        return this.prisma.event.findMany({
+            select: {
+                id: true,
+                image: true,
+                title: true,
+                date: true,
+                like: true
+            },
+            orderBy: {date: 'asc'}
+        });
+    }
 }
