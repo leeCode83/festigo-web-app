@@ -72,14 +72,13 @@ export class ReviewsService {
 
         const event = await this.prisma.event.findUnique({ where: { id: eventId } });
         if (!event) throw new NotFoundException();   //Jika event tidak ditemukan, maka akan throw error
-        return this.prisma.review.findMany({
+        const reviews = await this.prisma.review.findMany({
             where: { eventId },
             select: {
                 id: true,
                 rating: true,
                 comment: true,
                 createdAt: true,
-                updatedAt: true,
                 user: {
                     select: {
                         username: true
@@ -90,6 +89,14 @@ export class ReviewsService {
                 createdAt: 'desc'
             }
         });
+
+        return reviews.map(review => ({
+            id: review.id,
+            username: review.user.username,
+            rating: review.rating,
+            comment: review.comment,
+            createdAt: review.createdAt
+        }));
     }
 
     //Melihat semua review yang dibuat oleh user tertentu
@@ -98,14 +105,30 @@ export class ReviewsService {
 
         const user = await this.prisma.user.findUnique({ where: { id: userId } });
         if (!user) throw new NotFoundException();
-        return this.prisma.review.findMany({
-            where: { userId: userId },
-            include: {
-                event: { select: { title: true, category: true } }, // Sertakan informasi event yang di-review
+        const reviews = await this.prisma.review.findMany({
+            where: { userId },
+            select: {
+                id: true,
+                rating: true,
+                comment: true,
+                createdAt: true,
+                user: {
+                    select: {
+                        username: true
+                    }
+                }
             },
             orderBy: {
                 createdAt: 'desc'
             }
         });
+
+        return reviews.map(review => ({
+            id: review.id,
+            username: review.user.username,
+            rating: review.rating,
+            comment: review.comment,
+            createdAt: review.createdAt
+        }));
     }
 }

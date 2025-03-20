@@ -24,7 +24,7 @@ export class EventsController {
     } //Berhasil
 
     // Endpoint untuk mendapatkan event berdasarkan ID
-    @Get('id/:id')
+    @Get('/:id')
     async getEventById(@Param('id') id: number) {
         return this.eventService.getEventById(Number(id));
     } //Berhasil
