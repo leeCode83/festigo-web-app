@@ -1,0 +1,484 @@
+.main {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: transparent;
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.headerScrolled {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+}
+
+.headerTitle {
+  text-decoration: none;
+}
+
+.logo {
+  font-size: 1.75rem;
+  font-weight: 800;
+  background: linear-gradient(45deg, #6c5ce7, #a363d9);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.headerNav {
+  display: flex;
+  gap: 2rem;
+}
+
+.navLink {
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+}
+
+.navLink:hover {
+  color: #6c5ce7;
+  background: rgba(108, 92, 231, 0.1);
+}
+
+.headerButtons {
+  display: flex;
+  gap: 1rem;
+}
+
+.button {
+  padding: 0.75rem 1.75rem;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+}
+
+.outlineButton {
+  background: rgba(108, 92, 231, 0.1);
+  color: #6c5ce7;
+}
+
+.outlineButton:hover {
+  background: rgba(108, 92, 231, 0.2);
+}
+
+.button:not(.outlineButton) {
+  background: linear-gradient(45deg, #6c5ce7, #a363d9);
+  color: white;
+  box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+}
+
+.button:not(.outlineButton):hover {
+  box-shadow: 0 8px 25px rgba(108, 92, 231, 0.4);
+}
+
+.hero {
+  position: relative;
+  min-height: 600px;
+  padding: 8rem 2rem 4rem;
+  background: linear-gradient(135deg, #6c5ce7 0%, #a363d9 100%);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.heroContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+  color: white;
+  text-align: center;
+}
+
+.heroBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('/images/pattern.svg');
+  background-size: cover;
+  opacity: 0.1;
+}
+
+.heroTitle {
+  font-size: 4rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.highlight {
+  color: #ffd700;
+}
+
+.heroSubtitle {
+  font-size: 1.25rem;
+  opacity: 0.9;
+  margin-bottom: 3rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.searchContainer {
+  max-width: 700px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 16px;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.searchIconWrapper {
+  padding: 0 1.25rem;
+  color: #6c5ce7;
+  font-size: 1.25rem;
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 1rem;
+  font-size: 1rem;
+  color: #333;
+}
+
+.searchInput::placeholder {
+  color: #999;
+}
+
+.searchButton {
+  padding: 1rem 2rem;
+  background: linear-gradient(45deg, #6c5ce7, #a363d9);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.searchButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+}
+
+.popularSection, .upcomingSection {
+  padding: 4rem 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.sectionTitle {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(45deg, #6c5ce7, #a363d9);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.sectionLink {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6c5ce7;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.sectionLink:hover {
+  transform: translateX(5px);
+}
+
+.eventGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.popularEventCard {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.popularEventCard:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 30px rgba(108, 92, 231, 0.2);
+}
+
+.cardImageWrapper {
+  position: relative;
+  padding-top: 60%;
+}
+
+.cardImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cardCategory {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  padding: 0.5rem 1rem;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.cardActions {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.actionButton {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+}
+
+.actionButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.cardContent {
+  padding: 1.5rem;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.cardTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+.cardRating {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #ffd700;
+  font-weight: 600;
+}
+
+.cardInfo {
+  display: flex;
+  justify-content: space-between;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.cardInfo span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.upcomingEventCard {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.upcomingEventCard:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 30px rgba(108, 92, 231, 0.2);
+}
+
+.upcomingCardHeader {
+  position: relative;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #eee;
+}
+
+.upcomingEventLogo {
+  width: 60px;
+  height: 60px;
+  border-radius: 15px;
+  object-fit: cover;
+}
+
+.upcomingEventBadge {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: linear-gradient(45deg, #6c5ce7, #a363d9);
+  color: white;
+}
+
+.upcomingCardContent {
+  padding: 1.5rem;
+}
+
+.upcomingCardCategory {
+  color: #6c5ce7;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.upcomingCardTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.upcomingCardDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.upcomingCardDetails span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.upcomingCardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.upcomingCardPrice {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.upcomingCardButton {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(45deg, #6c5ce7, #a363d9);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.upcomingCardButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+}
+
+.categoryDropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.categoryDropdown button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: inherit;
+  font-family: inherit;
+}
+
+.dropdownContent {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 200px;
+  background: white;
+  border-radius: 12px;
+  padding: 0.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.dropdownItem {
+  display: block;
+  padding: 0.5rem 1rem;
+  color: #333;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.dropdownItem:hover {
+  background: rgba(108, 92, 231, 0.1);
+  color: #6c5ce7;
+}
+
+.categoryIcon {
+  font-size: 1.25rem;
+}
