@@ -1,0 +1,133 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: transparent;
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.headerScrolled {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+}
+
+.headerTitle {
+  text-decoration: none;
+}
+
+.logo {
+  font-size: 1.75rem;
+  font-weight: 800;
+  background: linear-gradient(45deg, #6c5ce7, #a363d9);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.headerNav {
+  display: flex;
+  gap: 2rem;
+}
+
+.navLink {
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+}
+
+.navLink:hover {
+  color: #6c5ce7;
+  background: rgba(108, 92, 231, 0.1);
+}
+
+.headerButtons {
+  display: flex;
+  gap: 1rem;
+}
+
+.button {
+  padding: 0.75rem 1.75rem;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+}
+
+.outlineButton {
+  background: rgba(108, 92, 231, 0.1);
+  color: #6c5ce7;
+}
+
+.outlineButton:hover {
+  background: rgba(108, 92, 231, 0.2);
+}
+
+.button:not(.outlineButton) {
+  background: linear-gradient(45deg, #6c5ce7, #a363d9);
+  color: white;
+  box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+}
+
+.button:not(.outlineButton):hover {
+  box-shadow: 0 8px 25px rgba(108, 92, 231, 0.4);
+}
+
+.categoryDropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.categoryDropdown button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: inherit;
+  font-family: inherit;
+}
+
+.dropdownContent {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 200px;
+  background: white;
+  border-radius: 12px;
+  padding: 0.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.dropdownItem {
+  display: block;
+  padding: 0.5rem 1rem;
+  color: #333;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.dropdownItem:hover {
+  background: rgba(108, 92, 231, 0.1);
+  color: #6c5ce7;
+}
+
+.categoryIcon {
+  font-size: 1.25rem;
+}

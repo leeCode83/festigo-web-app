@@ -1,0 +1,100 @@
+.upcomingEventCard {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.upcomingEventCard:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 30px rgba(108, 92, 231, 0.2);
+}
+
+.upcomingCardHeader {
+  position: relative;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #eee;
+}
+
+.upcomingEventLogo {
+  width: 80px;
+  height: 80px;
+  border-radius: 15px;
+  object-fit: cover;
+}
+
+.upcomingEventBadge {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: linear-gradient(45deg, #6c5ce7, #a363d9);
+  color: white;
+}
+
+.upcomingCardContent {
+  padding: 1.5rem;
+}
+
+.upcomingCardCategory {
+  color: #6c5ce7;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.upcomingCardTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.upcomingCardDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.upcomingCardDetails span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.upcomingCardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.upcomingCardPrice {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.upcomingCardButton {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(45deg, #6c5ce7, #a363d9);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.upcomingCardButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+}

@@ -103,15 +103,32 @@ export class EventsService {
     }
 
     async getUpcomingEventsCards() {
-        return this.prisma.event.findMany({
+        const events = await this.prisma.event.findMany({
+            where: {
+                date: {
+                    gte: new Date()
+                }
+            },
             select: {
                 id: true,
                 image: true,
                 title: true,
+                _count: { select: { like: true } }, // Ambil jumlah like
                 date: true,
-                like: true
+                ticketUrl: true
             },
-            orderBy: {date: 'asc'}
+            orderBy: {
+                like: { _count: 'asc' }
+            },
         });
+
+        return events.map(event => ({
+            id: event.id,
+            image: event.image,
+            title: event.title,
+            date: event.date,
+            ticketUrl: event.ticketUrl,
+            like: event._count.like
+        }));
     }
 }

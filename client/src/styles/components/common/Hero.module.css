@@ -1,0 +1,96 @@
+.hero {
+  position: relative;
+  min-height: 600px;
+  padding: 8rem 2rem 4rem;
+  background: linear-gradient(135deg, #6c5ce7 0%, #a363d9 100%);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.heroContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+  color: white;
+  text-align: center;
+}
+
+.heroBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('/images/pattern.svg');
+  background-size: cover;
+  opacity: 0.1;
+}
+
+.heroTitle {
+  font-size: 4rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.highlight {
+  color: #ffd700;
+}
+
+.heroSubtitle {
+  font-size: 1.25rem;
+  opacity: 0.9;
+  margin-bottom: 3rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.searchContainer {
+  max-width: 700px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 16px;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.searchIconWrapper {
+  padding: 0 1.25rem;
+  color: #6c5ce7;
+  font-size: 1.25rem;
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 1rem;
+  font-size: 1rem;
+  color: #333;
+}
+
+.searchInput::placeholder {
+  color: #999;
+}
+
+.searchButton {
+  padding: 1rem 2rem;
+  background: linear-gradient(45deg, #6c5ce7, #a363d9);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.searchButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+}

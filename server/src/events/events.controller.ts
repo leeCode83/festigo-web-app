@@ -11,8 +11,8 @@ export class EventsController {
 
     // Endpoint untuk membuat event baru
     @Post()
-    @UseGuards(AuthGuard('jwt'), RolesGuard)
-    @Roles('ADMIN')
+    // @UseGuards(AuthGuard('jwt'), RolesGuard)
+    // @Roles('ADMIN')
     async createEvent(@Body() dto: CreateEventDto) {
         return this.eventService.createEvent(dto);
     } //Berhasil
@@ -24,7 +24,7 @@ export class EventsController {
     } //Berhasil
 
     // Endpoint untuk mendapatkan event berdasarkan ID
-    @Get('/:id')
+    @Get('event/:id')
     async getEventById(@Param('id') id: number) {
         return this.eventService.getEventById(Number(id));
     } //Berhasil
@@ -37,16 +37,16 @@ export class EventsController {
 
     // Endpoint untuk mengupdate event berdasarkan ID
     @Patch(':id')
-    @UseGuards(AuthGuard('jwt'), RolesGuard)
-    @Roles('ADMIN')
+    // @UseGuards(AuthGuard('jwt'), RolesGuard)
+    // @Roles('ADMIN')
     async updateEvent(@Param('id') id: string, @Body() dto: UpdateEventDto) {
         return this.eventService.updateEvent(Number(id), dto);
     } //Berhasil
 
     // Endpoint untuk menghapus event berdasarkan ID
     @Delete(':id')
-    @UseGuards(AuthGuard('jwt'), RolesGuard)
-    @Roles('ADMIN')
+    // @UseGuards(AuthGuard('jwt'), RolesGuard)
+    // @Roles('ADMIN')
     async deleteEvent(@Param('id') id: string) {
         return this.eventService.deleteEvent(Number(id));
     } //Berhasil
