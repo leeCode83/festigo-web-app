@@ -150,6 +150,7 @@
 
 .inputGroup {
   width: 100%;
+  color: #000;
 }
 
 .input {
@@ -198,14 +199,6 @@
   background: linear-gradient(45deg, #6c5ce7, #a363d9);
   color: white;
   border: none;
-}
-
-.googleButton {
-  border: 2px solid #e5e7eb;
-}
-
-.facebookButton {
-  border: 2px solid #e5e7eb;
 }
 
 .divider {

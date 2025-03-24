@@ -2,6 +2,7 @@
 
 import { FaCalendar } from 'react-icons/fa';
 import styles from '@/styles/components/events/UpcomingEventCard.module.css';
+import { useRouter } from 'next/navigation';
 
 interface UpcomingEventCardProps {
   id: number;
@@ -13,8 +14,19 @@ interface UpcomingEventCardProps {
 }
 
 export default function UpcomingEventCard({ id, image, title, date, ticketUrl, like }: UpcomingEventCardProps) {
+  const router = useRouter();
+
+  const handleCardClick = () => {
+    router.push(`/events/${id}`);
+  };
+
+  const handleBookClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click when clicking book button
+    window.open(ticketUrl, '_blank');
+  };
+
   return (
-    <div className={styles.upcomingEventCard}>
+    <div className={styles.upcomingEventCard} onClick={handleCardClick}>
       <div className={styles.upcomingCardHeader}>
         <img 
           src={image}
@@ -31,7 +43,10 @@ export default function UpcomingEventCard({ id, image, title, date, ticketUrl, l
           <span><FaCalendar /> {new Date(date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
         </div>
         <div className={styles.upcomingCardFooter}>
-          <button className={styles.upcomingCardButton} onClick={() => window.open(ticketUrl, '_blank')}>
+          <button 
+            className={styles.upcomingCardButton} 
+            onClick={handleBookClick}
+          >
             Book Now
           </button>
         </div>

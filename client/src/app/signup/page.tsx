@@ -3,8 +3,59 @@
 import styles from '../../styles/signup.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
 
 export default function Signup() {
+  const router = useRouter();
+  const [formData, setFormData] = useState({
+    email: '',
+    username: '',
+    password: ''
+  });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const response = await fetch('http://localhost:3001/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Registration failed');
+      }
+
+      // Store the JWT token and username in cookies
+      Cookies.set('token', data.token, { expires: 7 }); // Token expires in 7 days
+      Cookies.set('username', data.username, { expires: 7 }); // Store username
+      router.push('/'); // Redirect to home page after successful registration
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className={styles.container}>
       <nav className={styles.nav}>
@@ -34,18 +85,16 @@ export default function Signup() {
             <h1 className={styles.title}>Create Account</h1>
             <p className={styles.subtitle}>Join the community and discover amazing events</p>
 
-            <div className={styles.signupOptions}>
-              <div className={styles.inputGroup}>
-                <input
-                  type="text"
-                  placeholder="Username"
-                  className={styles.input}
-                />
-              </div>
+            {error && <div className={styles.error}>{error}</div>}
 
+            <form onSubmit={handleSubmit} className={styles.signupOptions}>
               <div className={styles.inputGroup}>
                 <input
                   type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
                   placeholder="Email"
                   className={styles.input}
                 />
@@ -53,38 +102,34 @@ export default function Signup() {
 
               <div className={styles.inputGroup}>
                 <input
+                  type="text"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  required
+                  placeholder="Username"
+                  className={styles.input}
+                />
+              </div>
+
+              <div className={styles.inputGroup}>
+                <input
                   type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
                   placeholder="Password"
                   className={styles.input}
                 />
               </div>
 
-              <button type="submit" className={`${styles.signupButton} ${styles.submitButton}`}>
-                Sign up
-              </button>
-
-              <div className={styles.divider}>
-                <span>OR</span>
-              </div>
-
-              <button className={`${styles.signupButton} ${styles.googleButton}`}>
-                <Image
-                  src="/images/google.svg"
-                  alt="Google"
-                  width={20}
-                  height={20}
-                />
-                Continue with Google
-              </button>
-
-              <button className={`${styles.signupButton} ${styles.facebookButton}`}>
-                <Image
-                  src="/images/facebook.svg"
-                  alt="Facebook"
-                  width={20}
-                  height={20}
-                />
-                Facebook
+              <button 
+                type="submit" 
+                className={`${styles.signupButton} ${styles.submitButton}`}
+                disabled={loading}
+              >
+                {loading ? 'Creating Account...' : 'Sign up'}
               </button>
 
               <div className={styles.loginPrompt}>
@@ -95,13 +140,16 @@ export default function Signup() {
               </div>
 
               <p className={styles.terms}>
-                By joining, you agree to the{' '}
+                By joining, you agree to our{' '}
                 <Link href="/terms" className={styles.termsLink}>
-                  NGENG NGENG Terms of Service
+                  Terms of Service
                 </Link>{' '}
-                and to occasionally receive emails from us.
+                and{' '}
+                <Link href="/privacy" className={styles.termsLink}>
+                  Privacy Policy
+                </Link>
               </p>
-            </div>
+            </form>
           </div>
         </div>
       </div>

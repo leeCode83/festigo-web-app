@@ -1,13 +1,30 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FaSearch } from 'react-icons/fa';
 import styles from '@/styles/components/layout/Navbar.module.css';
+import Cookies from 'js-cookie';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [username, setUsername] = useState<string | undefined>();
+
+  useEffect(() => {
+    // Check for username in cookies
+    const storedUsername = Cookies.get('username');
+    setUsername(storedUsername);
+
+    // Add scroll event listener
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Check initial scroll position
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const categories = [
     {
@@ -43,7 +60,7 @@ export default function Navbar() {
   ];
 
   return (
-    <header className={`${styles.header} ${isScrolled ? styles.headerScrolled : ''}`}>
+    <header className={`${styles.header} ${isScrolled ? styles.scrolled : ''}`}>
       <Link href="/" className={styles.headerTitle}>
         <span className={styles.logo}>FestiGo</span>
       </Link>
@@ -72,7 +89,15 @@ export default function Navbar() {
         <Link href="/calendar" className={styles.navLink}>Calendar</Link>
       </nav>
       <div className={styles.headerButtons}>
-        <Link href="/signup" className={styles.button}>Join Now</Link>
+        {username ? (
+          <Link href="/profile" className={styles.button}>
+            {username}
+          </Link>
+        ) : (
+          <Link href="/signup" className={styles.button}>
+            Join Now
+          </Link>
+        )}
       </div>
     </header>
   );

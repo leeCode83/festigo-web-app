@@ -2,6 +2,7 @@
 
 import { FaHeart, FaShare, FaStar, FaCalendar } from 'react-icons/fa';
 import styles from '@/styles/components/events/PopularEventCard.module.css';
+import { useRouter } from 'next/navigation';
 
 interface PopularEventCardProps {
   id: number;
@@ -13,8 +14,19 @@ interface PopularEventCardProps {
 }
 
 export default function PopularEventCard({ id, image, title, date, like, averageRating }: PopularEventCardProps) {
+  const router = useRouter();
+
+  const handleCardClick = () => {
+    router.push(`/events/${id}`);
+  };
+
+  const handleActionClick = (e: React.MouseEvent, action: () => void) => {
+    e.stopPropagation(); // Prevent card click when clicking action buttons
+    action();
+  };
+
   return (
-    <div className={styles.popularEventCard}>
+    <div className={styles.popularEventCard} onClick={handleCardClick}>
       <div className={styles.cardImageWrapper}>
         <img 
           src={image}
@@ -22,8 +34,18 @@ export default function PopularEventCard({ id, image, title, date, like, average
           className={styles.cardImage}
         />
         <div className={styles.cardActions}>
-          <button className={styles.actionButton}><FaHeart /></button>
-          <button className={styles.actionButton}><FaShare /></button>
+          <button 
+            className={styles.actionButton}
+            onClick={(e) => handleActionClick(e, () => console.log('Like clicked'))}
+          >
+            <FaHeart />
+          </button>
+          <button 
+            className={styles.actionButton}
+            onClick={(e) => handleActionClick(e, () => console.log('Share clicked'))}
+          >
+            <FaShare />
+          </button>
         </div>
       </div>
       <div className={styles.cardContent}>
