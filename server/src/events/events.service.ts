@@ -77,6 +77,11 @@ export class EventsService {
 
     async getPopularEventsCards() {
         const events = await this.prisma.event.findMany({
+            where: {
+                date: {
+                    lte: new Date()
+                }
+            },
             select: {
                 id: true,
                 image: true,
@@ -88,7 +93,7 @@ export class EventsService {
             orderBy: {
                 like: { _count: 'desc' }, // Urutkan berdasarkan jumlah like
             },
-            take: 20, // Ambil 20 event teratas
+            take: 8, // Ambil 8 event teratas
         });
 
         // Hitung rata-rata rating secara manual

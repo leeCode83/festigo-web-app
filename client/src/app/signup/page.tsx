@@ -46,8 +46,8 @@ export default function Signup() {
       }
 
       // Store the JWT token and username in cookies
-      Cookies.set('token', data.token, { expires: 7 }); // Token expires in 7 days
-      Cookies.set('username', data.username, { expires: 7 }); // Store username
+      Cookies.set('token', data.token, { expires: 1 }); // Token expires in 1 day
+      Cookies.set('username', data.username, { expires: 1 }); // Store username with same expiration
       router.push('/'); // Redirect to home page after successful registration
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');

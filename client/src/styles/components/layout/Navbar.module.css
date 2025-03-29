@@ -131,3 +131,92 @@
 .categoryIcon {
   font-size: 1.25rem;
 }
+
+.userMenu {
+  position: relative;
+}
+
+.userButton {
+  padding: 0.75rem 1.75rem;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: none;
+  background: linear-gradient(45deg, #6c5ce7, #a363d9);
+  color: white;
+  box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+}
+
+.userButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(108, 92, 231, 0.4);
+}
+
+.logoutPopup {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  padding: 1rem;
+  width: 200px;
+  z-index: 1000;
+}
+
+.logoutPopup p {
+  margin: 0 0 1rem 0;
+  text-align: center;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.logoutButtons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.logoutButton {
+  flex: 1;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+}
+
+.confirmButton {
+  background: #ef4444;
+  color: white;
+}
+
+.confirmButton:hover {
+  background: #dc2626;
+}
+
+.cancelButton {
+  background: #e5e7eb;
+  color: #4b5563;
+}
+
+.cancelButton:hover {
+  background: #d1d5db;
+}
+
+.tokenInfo {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  background: #f0f0f0;
+  border-radius: 4px;
+  word-break: break-all;
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

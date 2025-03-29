@@ -27,15 +27,12 @@ export default function UpcomingEventCard({ id, image, title, date, ticketUrl, l
 
   return (
     <div className={styles.upcomingEventCard} onClick={handleCardClick}>
-      <div className={styles.upcomingCardHeader}>
+      <div className={styles.cardImageWrapper}>
         <img 
           src={image}
           alt={title}
-          className={styles.upcomingEventLogo}
+          className={styles.cardImage}
         />
-        <div className={styles.upcomingEventBadge}>
-          {like > 0 ? `${like} Likes` : 'New'}
-        </div>
       </div>
       <div className={styles.upcomingCardContent}>
         <h3 className={styles.upcomingCardTitle}>{title}</h3>

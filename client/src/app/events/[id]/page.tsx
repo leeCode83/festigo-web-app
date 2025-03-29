@@ -7,6 +7,15 @@ import styles from './page.module.css';
 import { format } from 'date-fns';
 import { FaMapMarkerAlt, FaCalendarAlt, FaClock, FaTicketAlt } from 'react-icons/fa';
 import Navbar from '@/components/layout/Navbar';
+import ReviewSection from '@/components/events/ReviewSection';
+
+interface Review {
+  id: number;
+  username: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+}
 
 interface Event {
   id: string;
@@ -24,18 +33,42 @@ interface Event {
 export default function EventDetail() {
   const params = useParams();
   const [event, setEvent] = useState<Event | null>(null);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  const fetchReviews = async () => {
+    try {
+      const response = await fetch(`http://localhost:3001/reviews/event/${params.id}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch reviews');
+      }
+      const data = await response.json();
+      setReviews(data);
+    } catch (err) {
+      console.error('Error fetching reviews:', err);
+    }
+  };
 
   useEffect(() => {
     const fetchEventDetails = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/events/event/${params.id}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch event details');
+        const [eventResponse, reviewsResponse] = await Promise.all([
+          fetch(`http://localhost:3001/events/event/${params.id}`),
+          fetch(`http://localhost:3001/reviews/event/${params.id}`)
+        ]);
+
+        if (!eventResponse.ok || !reviewsResponse.ok) {
+          throw new Error('Failed to fetch data');
         }
-        const data = await response.json();
-        setEvent(data);
+
+        const [eventData, reviewsData] = await Promise.all([
+          eventResponse.json(),
+          reviewsResponse.json()
+        ]);
+
+        setEvent(eventData);
+        setReviews(reviewsData);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
@@ -45,6 +78,12 @@ export default function EventDetail() {
 
     fetchEventDetails();
   }, [params.id]);
+
+  const calculateAverageRating = (reviews: Review[]) => {
+    if (reviews.length === 0) return 0;
+    const sum = reviews.reduce((acc, review) => acc + review.rating, 0);
+    return sum / reviews.length;
+  };
 
   if (loading) {
     return (
@@ -86,7 +125,6 @@ export default function EventDetail() {
           </div>
           <div className={styles.heroContent}>
             <h1 className={styles.title}>{event.title}</h1>
-            <div className={styles.organizer}>By {event.organizer}</div>
           </div>
         </div>
 
@@ -96,6 +134,14 @@ export default function EventDetail() {
               <h2 className={styles.sectionTitle}>About This Event</h2>
               <p className={styles.description}>{event.description}</p>
             </section>
+
+            <ReviewSection
+              eventId={params.id as string}
+              reviews={reviews}
+              averageRating={calculateAverageRating(reviews)}
+              totalReviews={reviews.length}
+              onReviewSubmitted={fetchReviews}
+            />
           </div>
 
           <div className={styles.sidebar}>

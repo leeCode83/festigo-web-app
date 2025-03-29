@@ -49,15 +49,19 @@ export default function PopularEventCard({ id, image, title, date, like, average
         </div>
       </div>
       <div className={styles.cardContent}>
-        <div className={styles.cardHeader}>
-          <h3 className={styles.cardTitle}>{title}</h3>
-          <div className={styles.cardRating}>
-            <FaStar /> {averageRating.toFixed(1)}
-          </div>
-        </div>
+        <h3 className={styles.cardTitle}>{title}</h3>
         <div className={styles.cardInfo}>
-          <span><FaCalendar /> {new Date(date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
-          <span><FaHeart /> {like}</span>
+          <div className={styles.cardDate}>
+            <FaCalendar /> {new Date(date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
+          </div>
+          <div className={styles.cardStats}>
+            <div className={styles.statItem}>
+              <FaStar className={styles.statIcon} /> {averageRating.toFixed(1)}
+            </div>
+            <div className={styles.statItem}>
+              <FaHeart className={styles.statIcon} /> {like}
+            </div>
+          </div>
         </div>
       </div>
     </div>

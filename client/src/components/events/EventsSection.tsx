@@ -31,11 +31,14 @@ interface EventsSectionProps {
 }
 
 export default function EventsSection({ type, title, linkText, linkHref, events }: EventsSectionProps) {
+  // Limit popular events to 8 cards
+  const displayEvents = type === 'popular' ? events.slice(0, 8) : events;
+
   return (
     <section className={styles.eventsSection}>
       <SectionHeader title={title} linkText={linkText} linkHref={linkHref} />
-      <div className={styles.eventGrid}>
-        {events.map((event) => (
+      <div className={`${styles.eventGrid} ${type === 'popular' ? styles.popularGrid : styles.upcomingGrid}`}>
+        {displayEvents.map((event) => (
           type === 'popular' ? (
             <PopularEventCard key={event.id} {...event as PopularEvent} />
           ) : (

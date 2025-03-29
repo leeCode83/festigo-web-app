@@ -1,26 +1,27 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import Footer from "@/components/layout/Footer";
 
 const inter = Inter({
   subsets: ["latin"],
-  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: "FestiGo - Find Your Next Adventure",
-  description: "Explore thousands of events, buy tickets, and share unforgettable moments",
+  title: "FestiGo",
+  description: "Discover and book the best events in your area",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased`}>
+      <body className={inter.className}>
         {children}
+        <Footer />
       </body>
     </html>
   );
