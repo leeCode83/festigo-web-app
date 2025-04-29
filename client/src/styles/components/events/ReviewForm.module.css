@@ -63,6 +63,7 @@
   margin-bottom: 1rem;
   font-family: inherit;
   transition: border-color 0.2s ease;
+  color: #000;
 }
 
 .reviewInput:focus {
@@ -103,53 +104,6 @@
   max-width: 600px;
   margin: 0 auto;
   padding: 1rem;
-}
-
-.debugButton {
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  background: #f0f0f0;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  color: #666;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.debugButton:hover {
-  background: #e0e0e0;
-}
-
-.debugPanel {
-  background: #f8f9fa;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-top: 1rem;
-}
-
-.debugPanel h4 {
-  margin: 0 0 1rem;
-  color: #333;
-  font-size: 1rem;
-}
-
-.debugInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.debugItem {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.debugItem strong {
-  color: #666;
-  font-size: 0.9rem;
 }
 
 .tokenDisplay,

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto, UpdateEventDto } from './dto/events.dto';
 import { AuthGuard } from '@nestjs/passport';
@@ -59,5 +59,11 @@ export class EventsController {
     @Get('upcoming')
     async getUpcomingEventCards(){
         return this.eventService.getUpcomingEventsCards();
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Post('bucketlist/:id')
+    async createBucketlist(@Request() req, @Param('id') id: number){
+        return this.eventService.createBucketlist(req.user.id, Number(id));
     }
 }

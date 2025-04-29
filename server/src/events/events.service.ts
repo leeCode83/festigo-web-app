@@ -136,4 +136,23 @@ export class EventsService {
             like: event._count.like
         }));
     }
+
+    async createBucketlist(userId: number, eventId: number){
+        const existingEvent = await this.prisma.event.findUnique({
+            where: { id: eventId}
+        });
+
+        if(!existingEvent){
+            throw new NotFoundException("Event not found");
+        }
+
+        const userBucketlist = await this.prisma.bucketlist.create({
+            data: {
+                userId,
+                eventId
+            }
+        });
+
+        return userBucketlist;
+    }
 }

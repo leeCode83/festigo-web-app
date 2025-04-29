@@ -24,7 +24,7 @@ export default function ReviewForm({ eventId, onReviewSubmitted }: ReviewFormPro
 
     // Validation
     if (rating === 0) {
-      setError('Please select a rating');
+      setError('Please give a rating');
       return;
     }
     if (!review.trim()) {
