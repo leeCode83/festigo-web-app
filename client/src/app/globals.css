@@ -3,18 +3,31 @@
 @tailwind utilities;
 
 :root {
+  --foreground-rgb: 23, 23, 23;
   --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
+  color: rgb(var(--foreground-rgb));
   background: var(--background);
-  color: var(--foreground);
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .animate-text-shine {
+    animation: text-shine 3s linear infinite;
+  }
+}
+
+@keyframes text-shine {
+  0%, 100% {
+    background-size: 200% 200%;
+    background-position: -100% center;
+  }
+  50% {
+    background-position: 100% center;
+  }
 }

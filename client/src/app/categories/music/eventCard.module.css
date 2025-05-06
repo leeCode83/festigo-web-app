@@ -1,0 +1,196 @@
+.eventsSection {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 3rem 1rem;
+}
+
+.sectionTitle {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.sectionHeading {
+  font-size: 1.875rem;
+  font-weight: 700;
+  background-image: linear-gradient(to right, #9333ea, #7e22ce);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.eventGrid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .eventGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .eventGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.eventCard {
+  position: relative;
+  background-color: white;
+  border: 1px solid rgb(233, 213, 255);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  transition: all 0.3s;
+}
+
+.eventCard:hover {
+  box-shadow: 0 20px 25px -5px rgba(168, 85, 247, 0.1);
+  border-color: rgb(216, 180, 254);
+  transform: translateY(-2px);
+}
+
+.imageContainer {
+  position: relative;
+  height: 10rem;
+  overflow: hidden;
+}
+
+.eventImage {
+  transition: transform 0.5s;
+}
+
+.eventCard:hover .eventImage {
+  transform: scale(1.1);
+}
+
+.imageOverlay {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(to top, rgba(88, 28, 135, 0.3), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.eventCard:hover .imageOverlay {
+  opacity: 1;
+}
+
+.categoryBadge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background-color: #9333ea;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.contentContainer {
+  padding: 1rem 1.25rem;
+}
+
+.eventTitle {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-bottom: 0.375rem;
+  color: rgb(17, 24, 39);
+  transition: color 0.3s;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.eventCard:hover .eventTitle {
+  color: #9333ea;
+}
+
+.eventDescription {
+  font-size: 0.875rem;
+  color: rgb(75, 85, 99);
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  transition: color 0.3s;
+}
+
+.eventCard:hover .eventDescription {
+  color: rgb(55, 65, 81);
+}
+
+.eventDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.detailRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: rgb(75, 85, 99);
+  transition: color 0.3s;
+}
+
+.eventCard:hover .detailRow {
+  color: rgb(55, 65, 81);
+}
+
+.detailIcon {
+  color: #9333ea;
+  transition: color 0.3s;
+}
+
+.eventCard:hover .detailIcon {
+  color: #7e22ce;
+}
+
+.detailText {
+  font-size: 0.875rem;
+}
+
+.priceText {
+  font-weight: 600;
+  color: #9333ea;
+}
+
+.eventCard:hover .priceText {
+  color: #7e22ce;
+}
+
+.footer {
+  padding-top: 1rem;
+  border-top: 1px solid rgb(243, 244, 246);
+}
+
+.actionButton {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  padding: 0.625rem 1.25rem;
+  background-image: linear-gradient(to right, #9333ea, #7e22ce);
+  color: white;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  box-shadow: 0 10px 15px -3px rgba(147, 51, 234, 0.2);
+  transition: all 0.3s;
+}
+
+.actionButton:hover {
+  background-image: linear-gradient(to right, #7e22ce, #581c87);
+  box-shadow: 0 10px 15px -3px rgba(147, 51, 234, 0.3);
+  transform: translateY(-1px);
+}
