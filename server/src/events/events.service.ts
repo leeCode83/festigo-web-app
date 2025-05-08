@@ -4,18 +4,70 @@ import { CreateEventDto, UpdateEventDto } from './dto/events.dto';
 
 @Injectable()
 export class EventsService {
-    constructor(private prisma: PrismaClient) { }
+    constructor(private prisma: PrismaClient) {}
+
+    private async getEventCards(options: { 
+        where: any, 
+        includeRating?: boolean,
+        orderBy?: any,
+        take?: number 
+    }) {
+        const events = await this.prisma.event.findMany({
+            where: options.where,
+            select: {
+                id: true,
+                image: true,
+                title: true,
+                description: true,
+                date: true,
+                location: true,
+                ticketUrl: true,
+                _count: {
+                    select: {
+                        like: true
+                    }
+                },
+                reviews: options.includeRating ? {
+                    select: {
+                        rating: true
+                    }
+                } : undefined
+            },
+            orderBy: options.orderBy,
+            take: options.take
+        });
+
+        return events.map(event => {
+            const baseEvent = {
+                id: event.id,
+                image: event.image,
+                title: event.title,
+                description: event.description,
+                date: event.date,
+                location: event.location,
+                ticketUrl: event.ticketUrl,
+                like: event._count.like
+            };
+
+            if (options.includeRating && event.reviews) {
+                return {
+                    ...baseEvent,
+                    averageRating: event.reviews.length > 0
+                        ? event.reviews.reduce((sum, r) => sum + r.rating, 0) / event.reviews.length
+                        : 0
+                };
+            }
+
+            return baseEvent;
+        });
+    }
+
     //Membuat event baru
     async createEvent(dto: CreateEventDto) {
         return this.prisma.event.create({
             data: {
-                category: dto.category,
-                title: dto.title,
-                description: dto.description,
-                date: new Date(dto.date),
-                location: dto.location,
-                image: dto.image,
-                ticketUrl: dto.ticketUrl,
+                ...dto,
+                date: new Date(dto.date)
             },
         });
     }
@@ -37,7 +89,7 @@ export class EventsService {
 
     //ambil event berdasarkan kategory
     async getEventsByCategory(category: string) {
-        return this.prisma.event.findMany({
+        const events = await this.prisma.event.findMany({
             where: {
                 category: {
                     equals: category,
@@ -45,6 +97,12 @@ export class EventsService {
                 },
             },
         });
+
+        if (!events.length) {
+            throw new NotFoundException(`No events found for category: ${category}`);
+        }
+
+        return events;
     }
 
     //Mengudate event
@@ -52,16 +110,13 @@ export class EventsService {
         const event = await this.prisma.event.findUnique({ where: { id } });
         if (!event) throw new NotFoundException('Event not found');
 
+        const { id: _, createdAt, updatedAt, ...eventData } = event;
         return this.prisma.event.update({
             where: { id },
             data: {
-                category: dto.category || event.category,
-                title: dto.title || event.title,
-                description: dto.description || event.description,
-                date: dto.date ? new Date(dto.date) : event.date,
-                location: dto.location || event.location,
-                image: dto.image || event.image,
-                ticketUrl: dto.ticketUrl || event.ticketUrl,
+                ...eventData,
+                ...dto,
+                date: dto.date ? new Date(dto.date) : event.date
             },
         });
     }
@@ -76,65 +131,19 @@ export class EventsService {
     }
 
     async getPopularEventsCards() {
-        const events = await this.prisma.event.findMany({
-            where: {
-                date: {
-                    lte: new Date()
-                }
-            },
-            select: {
-                id: true,
-                image: true,
-                title: true,
-                reviews: { select: { rating: true } }, // Ambil semua rating
-                _count: { select: { like: true } }, // Ambil jumlah like
-                date: true
-            },
-            orderBy: {
-                like: { _count: 'desc' }, // Urutkan berdasarkan jumlah like
-            },
-            take: 8, // Ambil 8 event teratas
+        return this.getEventCards({
+            where: { date: { lte: new Date() } },
+            includeRating: true,
+            orderBy: { like: { _count: 'desc' } },
+            take: 8
         });
-
-        // Hitung rata-rata rating secara manual
-        return events.map(event => ({
-            id: event.id,
-            image: event.image,
-            title: event.title,
-            date: event.date,
-            like: event._count.like, // Ambil langsung nilai like tanpa _count
-            averageRating: event.reviews.length ? event.reviews.reduce((sum, r) => sum + r.rating, 0) / event.reviews.length : 0, // Jika tidak ada review, rating = 0
-        }));
     }
 
     async getUpcomingEventsCards() {
-        const events = await this.prisma.event.findMany({
-            where: {
-                date: {
-                    gte: new Date()
-                }
-            },
-            select: {
-                id: true,
-                image: true,
-                title: true,
-                _count: { select: { like: true } }, // Ambil jumlah like
-                date: true,
-                ticketUrl: true
-            },
-            orderBy: {
-                like: { _count: 'asc' }
-            },
+        return this.getEventCards({
+            where: { date: { gte: new Date() } },
+            orderBy: { like: { _count: 'asc' } }
         });
-
-        return events.map(event => ({
-            id: event.id,
-            image: event.image,
-            title: event.title,
-            date: event.date,
-            ticketUrl: event.ticketUrl,
-            like: event._count.like
-        }));
     }
 
     async createBucketlist(userId: number, eventId: number){
