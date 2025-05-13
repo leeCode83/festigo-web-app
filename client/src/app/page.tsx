@@ -1,37 +1,27 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
-import { format } from 'date-fns';
-import { FaMapMarkerAlt, FaCalendarAlt, FaClock, FaHeart, FaStar, FaChevronRight } from 'react-icons/fa';
+import { FaChevronRight } from 'react-icons/fa';
 import Navbar from '@/components/layout/Navbar';
 import Hero from '@/components/common/Hero';
+import EventCard from '@/components/events/EventCard';
 import styles from './page.module.css';
 
-interface PopularEvent {
-  id: number;
-  image: string;
-  title: string;
-  date: string;
-  like: number;
-  averageRating: number;
-}
-
-interface UpcomingEvent {
-  id: number;
+interface Event {
+  id: string;
   image: string;
   title: string;
   date: string;
   location: string;
-  ticketUrl: string;
-  like: number;
+  likes: number;
+  averageRating: number;
 }
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [popularEvents, setPopularEvents] = useState<PopularEvent[]>([]);
-  const [upcomingEvents, setUpcomingEvents] = useState<UpcomingEvent[]>([]);
+  const [popularEvents, setPopularEvents] = useState<Event[]>([]);
+  const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -64,119 +54,28 @@ export default function Home() {
     fetchEvents();
   }, []);
 
-  const renderPopularEvents = () => (
-    <section className={styles.popularSection}>
+  const renderEventSection = (title: string, events: Event[], viewAllLink: string, viewAllText: string) => (
+    <section className={styles.eventSection}>
       <div className={styles.sectionHeader}>
-        <h2 className={styles.sectionTitle}>Popular Right Now</h2>
-        <Link href="/popular" className={styles.sectionLink}>
-          View All <FaChevronRight />
+        <h2 className={styles.sectionTitle}>{title}</h2>
+        <Link href={viewAllLink} className={styles.sectionLink}>
+          {viewAllText} <FaChevronRight />
         </Link>
       </div>
 
       <div className={styles.eventGrid}>
-        {popularEvents.map((event) => (
-          <article key={event.id} className={styles.popularEventCard}>
-            <Link href={`/events/${event.id}`} className={styles.cardLink}>
-              <div className={styles.cardImageWrapper}>
-                <Image
-                  src={event.image}
-                  alt={event.title}
-                  className={styles.cardImage}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
-                <div className={styles.cardActions}>
-                  <button className={styles.actionButton} onClick={(e) => e.stopPropagation()}>
-                    <FaHeart />
-                  </button>
-                </div>
-              </div>
-              <div className={styles.cardContent}>
-                <div className={styles.cardHeader}>
-                  <h3 className={styles.cardTitle}>{event.title}</h3>
-                  <div className={styles.cardRating}>
-                    <FaStar />
-                    <span>{event.averageRating.toFixed(1)}</span>
-                  </div>
-                </div>
-                <div className={styles.cardInfo}>
-                  <span>
-                    <FaCalendarAlt />
-                    {format(new Date(event.date), 'MMM d, yyyy')}
-                  </span>
-                  <span>
-                    <FaHeart />
-                    {event.like} likes
-                  </span>
-                </div>
-              </div>
-            </Link>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-
-  const renderUpcomingEvents = () => (
-    <section className={styles.upcomingSection}>
-      <div className={styles.sectionHeader}>
-        <h2 className={styles.sectionTitle}>Upcoming Events</h2>
-        <Link href="/calendar" className={styles.sectionLink}>
-          View Calendar <FaChevronRight />
-        </Link>
-      </div>
-
-      <div className={styles.eventGrid}>
-        {upcomingEvents.map((event) => (
-          <article key={event.id} className={styles.upcomingEventCard}>
-            <Link href={`/events/${event.id}`} className={styles.cardLink}>
-              <div className={styles.cardImageWrapper}>
-                <Image
-                  src={event.image}
-                  alt={event.title}
-                  className={styles.cardImage}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
-                <div className={styles.cardActions}>
-                  <button className={styles.actionButton} onClick={(e) => e.stopPropagation()}>
-                    <FaHeart />
-                  </button>
-                </div>
-              </div>
-              <div className={styles.cardContent}>
-                <h3 className={styles.cardTitle}>{event.title}</h3>
-                <div className={styles.upcomingCardDetails}>
-                  <span>
-                    <FaCalendarAlt />
-                    {format(new Date(event.date), 'EEEE, MMMM d, yyyy')}
-                  </span>
-                  <span>
-                    <FaClock />
-                    {format(new Date(event.date), 'h:mm a')}
-                  </span>
-                  <span>
-                    <FaMapMarkerAlt />
-                    {event.location || 'Location TBA'}
-                  </span>
-                </div>
-                <div className={styles.upcomingCardFooter}>
-                  <span className={styles.cardInfo}>
-                    <FaHeart /> {event.like} likes
-                  </span>
-                  <Link
-                    href={event.ticketUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.upcomingCardButton}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    Get Tickets
-                  </Link>
-                </div>
-              </div>
-            </Link>
-          </article>
+        {events.map((event) => (
+          <Link key={event.id} href={`/events/${event.id}`} className={styles.cardLink}>
+            <EventCard
+              id={event.id}
+              image={event.image}
+              title={event.title}
+              date={event.date}
+              location={event.location}
+              averageRating={event.averageRating}
+              likes={event.likes}
+            />
+          </Link>
         ))}
       </div>
     </section>
@@ -196,8 +95,8 @@ export default function Home() {
     <main className={styles.main}>
       <Navbar />
       <Hero searchQuery={searchQuery} onSearchChange={setSearchQuery} />
-      {renderPopularEvents()}
-      {renderUpcomingEvents()}
+      {renderEventSection('Popular Right Now', popularEvents, '/popular', 'View All')}
+      {renderEventSection('Upcoming Events', upcomingEvents, '/calendar', 'View Calendar')}
     </main>
   );
 }

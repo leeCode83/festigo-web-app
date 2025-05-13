@@ -2,23 +2,19 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import Image from 'next/image';
 import Link from 'next/link';
-import { format } from 'date-fns';
-import { FaMapMarkerAlt, FaCalendarAlt, FaClock, FaHeart, FaStar } from 'react-icons/fa';
 import Navbar from '@/components/layout/Navbar';
+import EventCard from '@/components/events/EventCard';
 import styles from './page.module.css';
 
 interface CategoryEvent {
-  id: number;
+  id: string;
   title: string;
   image: string;
   date: string;
-  time: string;
   location: string;
-  like: number;
+  likes: number;
   averageRating: number;
-  ticketUrl: string;
 }
 
 const categories = {
@@ -169,64 +165,20 @@ export default function CategoryPage() {
           </div>
 
           <div className={styles.eventGrid}>
-          {events.map((event) => (
-            <article key={event.id} className={styles.eventCard}>
-              <Link href={`/events/${event.id}`} className={styles.cardLink}>
-                <div className={styles.cardImageWrapper}>
-                  <Image
-                    src={event.image}
-                    alt={event.title}
-                    className={styles.cardImage}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                  <div className={styles.cardActions}>
-                    <button className={styles.actionButton} onClick={(e) => e.stopPropagation()}>
-                      <FaHeart />
-                    </button>
-                  </div>
-                </div>
-                <div className={styles.cardContent}>
-                  <div className={styles.cardHeader}>
-                    <h3 className={styles.cardTitle}>{event.title}</h3>
-                    <div className={styles.cardRating}>
-                      <FaStar />
-                      <span>{event.averageRating ? event.averageRating.toFixed(1) : 'N/A'}</span>
-                    </div>
-                  </div>
-                  <div className={styles.cardDetails}>
-                    <span className={styles.cardDetail}>
-                      <FaCalendarAlt />
-                      {format(new Date(event.date), 'EEEE, MMMM d, yyyy')}
-                    </span>
-                    <span className={styles.cardDetail}>
-                      <FaClock />
-                      {event.time ? format(new Date(`${event.date.split('T')[0]}T${event.time}`), 'h:mm a') : 'Time TBA'}
-                    </span>
-                    <span className={styles.cardDetail}>
-                      <FaMapMarkerAlt />
-                      {event.location}
-                    </span>
-                  </div>
-                  <div className={styles.cardFooter}>
-                    <span className={styles.cardLikes}>
-                      <FaHeart /> {event.like} likes
-                    </span>
-                    <Link
-                      href={event.ticketUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={styles.ticketButton}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      Get Tickets
-                    </Link>
-                  </div>
-                </div>
+            {events.map((event) => (
+              <Link key={event.id} href={`/events/${event.id}`} className={styles.cardLink}>
+                <EventCard
+                  id={event.id}
+                  image={event.image}
+                  title={event.title}
+                  date={event.date}
+                  location={event.location}
+                  averageRating={event.averageRating}
+                  likes={event.likes}
+                />
               </Link>
-            </article>
-          ))}
-        </div>
+            ))}
+          </div>
 
           {events.length === 0 && !error && (
             <div className={styles.noEvents}>

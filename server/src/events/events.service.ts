@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { CreateEventDto, UpdateEventDto } from './dto/events.dto'; 
 
@@ -7,59 +7,52 @@ export class EventsService {
     constructor(private prisma: PrismaClient) {}
 
     private async getEventCards(options: { 
-        where: any, 
-        includeRating?: boolean,
-        orderBy?: any,
+        where: any,
         take?: number 
     }) {
-        const events = await this.prisma.event.findMany({
-            where: options.where,
-            select: {
-                id: true,
-                image: true,
-                title: true,
-                description: true,
-                date: true,
-                location: true,
-                ticketUrl: true,
-                _count: {
-                    select: {
-                        like: true
+        try {
+            // Fetch events with their reviews
+            const events = await this.prisma.event.findMany({
+                where: options.where,
+                select: {
+                    id: true,
+                    image: true,
+                    title: true,
+                    date: true,
+                    location: true,
+                    _count: {
+                        select: {
+                            like: true
+                        }
+                    },
+                    reviews: {
+                        select: {
+                            rating: true
+                        }
                     }
-                },
-                reviews: options.includeRating ? {
-                    select: {
-                        rating: true
-                    }
-                } : undefined
-            },
-            orderBy: options.orderBy,
-            take: options.take
-        });
+                }
+            });
 
-        return events.map(event => {
-            const baseEvent = {
-                id: event.id,
-                image: event.image,
-                title: event.title,
-                description: event.description,
-                date: event.date,
-                location: event.location,
-                ticketUrl: event.ticketUrl,
-                like: event._count.like
-            };
-
-            if (options.includeRating && event.reviews) {
-                return {
-                    ...baseEvent,
+            // Calculate average rating, transform and sort events
+            const transformedEvents = events
+                .map(event => ({
+                    id: event.id,
+                    image: event.image,
+                    title: event.title,
+                    date: event.date,
+                    location: event.location,
+                    likes: event._count.like,
                     averageRating: event.reviews.length > 0
-                        ? event.reviews.reduce((sum, r) => sum + r.rating, 0) / event.reviews.length
+                        ? +(event.reviews.reduce((acc, review) => acc + review.rating, 0) / event.reviews.length).toFixed(1)
                         : 0
-                };
-            }
+                }))
+                .sort((a, b) => b.averageRating - a.averageRating);
 
-            return baseEvent;
-        });
+            // Apply limit if specified
+            return options.take ? transformedEvents.slice(0, options.take) : transformedEvents;
+        } catch (error) {
+            throw new BadRequestException('Failed to fetch events');
+        }
     }
 
     //Membuat event baru
@@ -145,20 +138,15 @@ export class EventsService {
 
     //ambil event berdasarkan kategory
     async getEventsByCategory(category: string) {
-        const events = await this.prisma.event.findMany({
+       return this.getEventCards({
             where: {
                 category: {
                     equals: category,
                     mode: 'insensitive', // Agar pencarian tidak case-sensitive
-                },
+                }
             },
+            take: 8
         });
-
-        if (!events.length) {
-            throw new NotFoundException(`No events found for category: ${category}`);
-        }
-
-        return events;
     }
 
     //Mengudate event
@@ -189,8 +177,6 @@ export class EventsService {
     async getPopularEventsCards() {
         return this.getEventCards({
             where: { date: { lte: new Date() } },
-            includeRating: true,
-            orderBy: { like: { _count: 'desc' } },
             take: 8
         });
     }
@@ -198,7 +184,7 @@ export class EventsService {
     async getUpcomingEventsCards() {
         return this.getEventCards({
             where: { date: { gte: new Date() } },
-            orderBy: { like: { _count: 'asc' } }
+            take: 8
         });
     }
 

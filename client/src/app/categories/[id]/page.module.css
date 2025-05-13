@@ -159,6 +159,17 @@
     margin-top: 2rem;
   }
   
+  .cardLink {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: transform 0.3s ease;
+  }
+  
+  .cardLink:hover {
+    transform: translateY(-8px);
+  }
+  
   .eventCard {
     background: white;
     border-radius: 20px;
@@ -171,12 +182,6 @@
   .eventCard:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-  }
-  
-  .cardLink {
-    text-decoration: none;
-    color: inherit;
-    display: block;
   }
   
   .cardImageWrapper {
