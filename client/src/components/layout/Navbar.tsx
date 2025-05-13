@@ -64,34 +64,34 @@ export default function Navbar() {
 
   const categories = [
     {
-      title: 'Konser & Musik',
+      title: 'Music Events',
       icon: '🎵',
       href: '/categories/music'
     },
     {
-      title: 'Pensi & Acara Kampus',
-      icon: '🎓',
-      href: '/categories/campus'
-    },
-    {
-      title: 'Festival & Expo',
-      icon: '🎪',
-      href: '/categories/festival'
+      title: 'Culinary Events',
+      icon: '🍳',
+      href: '/categories/culinary'
     },
     {
       title: 'Pop Culture',
       icon: '🌟',
-      href: '/categories/popculture'
+      href: '/categories/pop-culture'
     },
     {
-      title: 'Pertunjukan Seni',
-      icon: '🎭',
-      href: '/categories/arts'
+      title: 'Art Events',
+      icon: '🎨',
+      href: '/categories/art'
     },
     {
-      title: 'Sport & Esports',
-      icon: '🎮',
+      title: 'Sports Events',
+      icon: '⚽',
       href: '/categories/sports'
+    },
+    {
+      title: 'Educational Events',
+      icon: '📚',
+      href: '/categories/education'
     }
   ];
 

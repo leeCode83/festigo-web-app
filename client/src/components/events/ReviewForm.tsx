@@ -8,9 +8,10 @@ import Cookies from 'js-cookie';
 interface ReviewFormProps {
   eventId: string;
   onReviewSubmitted: () => void;
+  eventStatus: 'upcoming' | 'past' | 'ongoing';
 }
 
-export default function ReviewForm({ eventId, onReviewSubmitted }: ReviewFormProps) {
+export default function ReviewForm({ eventId, onReviewSubmitted, eventStatus }: ReviewFormProps) {
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [review, setReview] = useState('');
@@ -71,7 +72,9 @@ export default function ReviewForm({ eventId, onReviewSubmitted }: ReviewFormPro
   return (
     <div className={styles.formContainer}>
       <form className={styles.reviewForm} onSubmit={handleSubmit}>
-        <h3 className={styles.formTitle}>Write a Review</h3>
+        <h3 className={styles.formTitle}>
+          {eventStatus === 'upcoming' ? 'Pre-Event Review' : 'Write a Review'}
+        </h3>
         
         <div className={styles.ratingContainer}>
           <div className={styles.stars}>

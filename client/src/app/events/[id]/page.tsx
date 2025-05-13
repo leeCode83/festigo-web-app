@@ -17,6 +17,17 @@ interface Review {
   createdAt: string;
 }
 
+interface Thread {
+  id: number;
+  title: string;
+  content: string;
+  createdAt: string;
+  userId: number;
+  _count?: {
+    replies: number;
+  };
+}
+
 interface Event {
   id: string;
   title: string;
@@ -25,17 +36,20 @@ interface Event {
   date: string;
   time: string;
   location: string;
+  status: 'upcoming' | 'past' | 'ongoing';
   ticketUrl: string;
   price: string;
   organizer: string;
+  threads: Thread[];
 }
 
 export default function EventDetail() {
   const params = useParams();
   const [event, setEvent] = useState<Event | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [threads, setThreads] = useState<Thread[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [eventStatus, setEventStatus] = useState<'upcoming' | 'past' | 'ongoing'>('upcoming');
 
   const fetchReviews = async () => {
     try {
@@ -69,10 +83,17 @@ export default function EventDetail() {
 
         setEvent(eventData);
         setReviews(reviewsData);
+        setThreads(eventData.threads || []);
+
+        // Determine event status
+        const eventDate = new Date(`${eventData.date} ${eventData.time}`);
+        const now = new Date();
+        const status = eventDate > now ? 'upcoming' : (eventDate.getDate() === now.getDate() ? 'ongoing' : 'past');
+        setEventStatus(status);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
+        console.error('Error fetching event details:', err);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
@@ -85,7 +106,7 @@ export default function EventDetail() {
     return sum / reviews.length;
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div>
         <Navbar />
@@ -96,12 +117,12 @@ export default function EventDetail() {
     );
   }
 
-  if (error || !event) {
+  if (!event) {
     return (
       <div>
         <Navbar />
         <div className={styles.errorContainer}>
-          <div className={styles.error}>{error || 'Event not found'}</div>
+          <div className={styles.error}>Event not found</div>
         </div>
       </div>
     );
@@ -136,12 +157,32 @@ export default function EventDetail() {
             </section>
 
             <ReviewSection
-              eventId={params.id as string}
+              eventId={event.id}
               reviews={reviews}
               averageRating={calculateAverageRating(reviews)}
               totalReviews={reviews.length}
               onReviewSubmitted={fetchReviews}
+              eventStatus={eventStatus}
             />
+
+            <section className={styles.section}>
+              <h2 className={styles.sectionTitle}>Discussions</h2>
+              <div className={styles.threadList}>
+                {threads.length === 0 ? (
+                  <p className={styles.noThreads}>No discussions yet. Be the first to start a discussion!</p>
+                ) : (
+                  threads.map((thread) => (
+                    <div key={thread.id} className={styles.threadItem}>
+                      <h3 className={styles.threadTitle}>{thread.title}</h3>
+                      <div className={styles.threadMeta}>
+                        <span>{format(new Date(thread.createdAt), 'MMM d, yyyy')}</span>
+                        <span>{thread._count?.replies || 0} replies</span>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </section>
           </div>
 
           <div className={styles.sidebar}>

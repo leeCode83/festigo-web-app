@@ -80,7 +80,11 @@ export class EventsService {
     //ambil event berdasarkan ID
     async getEventById(id: number) {
         const event = await this.prisma.event.findUnique({
-            where: { id }
+            where: { id },
+            include: {
+                reviews: true,
+                threads: true
+            }
         });
 
         if (!event) throw new NotFoundException('Event not found');

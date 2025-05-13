@@ -19,9 +19,10 @@ interface ReviewSectionProps {
   averageRating: number;
   totalReviews: number;
   onReviewSubmitted: () => void;
+  eventStatus: 'upcoming' | 'past' | 'ongoing';
 }
 
-export default function ReviewSection({ eventId, reviews, averageRating, totalReviews, onReviewSubmitted }: ReviewSectionProps) {
+export default function ReviewSection({ eventId, reviews, averageRating, totalReviews, onReviewSubmitted, eventStatus }: ReviewSectionProps) {
   return (
     <section className={styles.reviewSection}>
       <div className={styles.reviewHeader}>
@@ -46,7 +47,7 @@ export default function ReviewSection({ eventId, reviews, averageRating, totalRe
         </div>
       </div>
 
-      <ReviewForm eventId={eventId} onReviewSubmitted={onReviewSubmitted} />
+      <ReviewForm eventId={eventId} onReviewSubmitted={onReviewSubmitted} eventStatus={eventStatus} />
 
       <div className={styles.reviewList}>
         {reviews.map((review) => (

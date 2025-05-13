@@ -16,7 +16,7 @@ export class DiscussionsService {
             throw new NotFoundException(`Event with ID ${dto.eventId} not found`);
         }
 
-        // Create the discussion thread
+        // Membuat thread diskusi, data yang digunakan dapat dilihat di DTO discussion
         try {
             const thread = await this.prisma.thread.create({
                 data: {
@@ -24,18 +24,8 @@ export class DiscussionsService {
                     userId: userId,
                     title: dto.title,
                     content: dto.content
-                },
-                include: {
-                    user: {
-                        select: {
-                            id: true,
-                            username: true,
-                            avatarUrl: true
-                        }
-                    }
                 }
             });
-
             return thread;
         } catch (error) {
             throw new BadRequestException('Failed to create discussion thread');
