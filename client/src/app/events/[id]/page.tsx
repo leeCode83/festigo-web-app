@@ -22,7 +22,7 @@ interface Thread {
   title: string;
   content: string;
   createdAt: string;
-  userId: number;
+  username: string;
   _count?: {
     replies: number;
   };
@@ -40,68 +40,45 @@ interface Event {
   ticketUrl: string;
   price: string;
   organizer: string;
+  reviews: Review[];
   threads: Thread[];
 }
 
 export default function EventDetail() {
   const params = useParams();
   const [event, setEvent] = useState<Event | null>(null);
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [threads, setThreads] = useState<Thread[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [eventStatus, setEventStatus] = useState<'upcoming' | 'past' | 'ongoing'>('upcoming');
 
-  const fetchReviews = async () => {
+  const fetchEventDetails = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/reviews/event/${params.id}`);
+      const response = await fetch(`http://localhost:3001/events/event/${params.id}`);
+
       if (!response.ok) {
-        throw new Error('Failed to fetch reviews');
+        throw new Error('Failed to fetch data');
       }
-      const data = await response.json();
-      setReviews(data);
+
+      const eventData = await response.json();
+      setEvent(eventData);
+
+      // Determine event status
+      const eventDate = new Date(`${eventData.date} ${eventData.time}`);
+      const now = new Date();
+      const status = eventDate > now ? 'upcoming' : (eventDate.getDate() === now.getDate() ? 'ongoing' : 'past');
+      setEventStatus(status);
     } catch (err) {
-      console.error('Error fetching reviews:', err);
+      console.error('Error fetching event details:', err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    const fetchEventDetails = async () => {
-      try {
-        const [eventResponse, reviewsResponse] = await Promise.all([
-          fetch(`http://localhost:3001/events/event/${params.id}`),
-          fetch(`http://localhost:3001/reviews/event/${params.id}`)
-        ]);
-
-        if (!eventResponse.ok || !reviewsResponse.ok) {
-          throw new Error('Failed to fetch data');
-        }
-
-        const [eventData, reviewsData] = await Promise.all([
-          eventResponse.json(),
-          reviewsResponse.json()
-        ]);
-
-        setEvent(eventData);
-        setReviews(reviewsData);
-        setThreads(eventData.threads || []);
-
-        // Determine event status
-        const eventDate = new Date(`${eventData.date} ${eventData.time}`);
-        const now = new Date();
-        const status = eventDate > now ? 'upcoming' : (eventDate.getDate() === now.getDate() ? 'ongoing' : 'past');
-        setEventStatus(status);
-      } catch (err) {
-        console.error('Error fetching event details:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchEventDetails();
   }, [params.id]);
 
   const calculateAverageRating = (reviews: Review[]) => {
-    if (reviews.length === 0) return 0;
+    if (!reviews || reviews.length === 0) return 0;
     const sum = reviews.reduce((acc, review) => acc + review.rating, 0);
     return sum / reviews.length;
   };
@@ -158,23 +135,27 @@ export default function EventDetail() {
 
             <ReviewSection
               eventId={event.id}
-              reviews={reviews}
-              averageRating={calculateAverageRating(reviews)}
-              totalReviews={reviews.length}
-              onReviewSubmitted={fetchReviews}
+              reviews={event.reviews || []}
+              averageRating={calculateAverageRating(event.reviews)}
+              totalReviews={event.reviews?.length || 0}
+              onReviewSubmitted={() => {
+                // Refresh event data after new review
+                fetchEventDetails();
+              }}
               eventStatus={eventStatus}
             />
 
             <section className={styles.section}>
               <h2 className={styles.sectionTitle}>Discussions</h2>
               <div className={styles.threadList}>
-                {threads.length === 0 ? (
+                {(!event.threads || event.threads.length === 0) ? (
                   <p className={styles.noThreads}>No discussions yet. Be the first to start a discussion!</p>
                 ) : (
-                  threads.map((thread) => (
+                  event.threads.map((thread) => (
                     <div key={thread.id} className={styles.threadItem}>
                       <h3 className={styles.threadTitle}>{thread.title}</h3>
                       <div className={styles.threadMeta}>
+                        <span>By {thread.username}</span>
                         <span>{format(new Date(thread.createdAt), 'MMM d, yyyy')}</span>
                         <span>{thread._count?.replies || 0} replies</span>
                       </div>

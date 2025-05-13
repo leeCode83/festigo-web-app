@@ -74,22 +74,74 @@ export class EventsService {
 
     // Ambil semua event
     async getAllEvents() {
-        return this.prisma.event.findMany();
+        return this.prisma.event.findMany({
+            select: {
+                id: true,
+                title: true,
+                image: true,
+                date: true
+            },
+            orderBy: {
+                createdAt: 'desc', // Urutkan berdasarkan tanggal terbaru
+            },
+        });
     }
+    
 
     //ambil event berdasarkan ID
     async getEventById(id: number) {
         const event = await this.prisma.event.findUnique({
             where: { id },
             include: {
-                reviews: true,
-                threads: true
+                reviews: {
+                    select: {
+                        id: true,
+                        rating: true,
+                        comment: true,
+                        user: { select: { username: true } },
+                        createdAt: true
+                    }
+                },
+                threads: {
+                    select: {
+                        id: true,
+                        title: true,
+                        content: true,
+                        user: { select: { username: true } },
+                        createdAt: true
+                    }
+                }
             }
         });
-
+    
         if (!event) throw new NotFoundException('Event not found');
-        return event;
+    
+        // Flatten reviews
+        const flattenedReviews = event.reviews.map((review) => ({
+            id: review.id,
+            rating: review.rating,
+            comment: review.comment,
+            username: review.user.username,
+            createdAt: review.createdAt,
+        }));
+    
+        // Flatten threads
+        const flattenedThreads = event.threads.map((thread) => ({
+            id: thread.id,
+            title: thread.title,
+            content: thread.content,
+            username: thread.user.username,
+            createdAt: thread.createdAt,
+        }));
+    
+        // Return a new object with flattened data
+        return {
+            ...event,
+            reviews: flattenedReviews,
+            threads: flattenedThreads,
+        };
     }
+    
 
     //ambil event berdasarkan kategory
     async getEventsByCategory(category: string) {

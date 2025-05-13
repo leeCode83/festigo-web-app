@@ -25,13 +25,8 @@ export class ReviewsController {
         return this.reviewService.deleteReview(req.user.id, Number(reviewId));
     }   //Berhasil
 
-    //Melihat semua review dari satu event
-    @Get('/event/:eventId')
-    getReviewsByEvent(@Param('eventId') eventId: number) {
-        return this.reviewService.getReviewsByEvent(Number(eventId));
-    }   //Berhasil
-
     //Melihat semua review yang dibuat oleh user tertentu
+    @UseGuards(AuthGuard('jwt'))
     @Get('/user/:userId')
     getReviewsByUser(@Param('userId') userId: number) {
         return this.reviewService.getReviewsByUser(Number(userId));

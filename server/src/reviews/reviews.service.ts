@@ -67,38 +67,6 @@ export class ReviewsService {
         return this.prisma.review.delete({ where: { id: reviewId } });
     }
 
-    async getReviewsByEvent(eventId: number) {
-        if (isNaN(eventId)) throw new BadRequestException();   //Jika eventId bukan angka, maka akan throw error
-
-        const event = await this.prisma.event.findUnique({ where: { id: eventId } });
-        if (!event) throw new NotFoundException();   //Jika event tidak ditemukan, maka akan throw error
-        const reviews = await this.prisma.review.findMany({
-            where: { eventId },
-            select: {
-                id: true,
-                rating: true,
-                comment: true,
-                createdAt: true,
-                user: {
-                    select: {
-                        username: true
-                    }
-                }
-            },
-            orderBy: {
-                createdAt: 'desc'
-            }
-        });
-
-        return reviews.map(review => ({
-            id: review.id,
-            username: review.user.username,
-            rating: review.rating,
-            comment: review.comment,
-            createdAt: review.createdAt
-        }));
-    }
-
     //Melihat semua review yang dibuat oleh user tertentu
     async getReviewsByUser(userId: number) {
         if (isNaN(userId)) throw new BadRequestException();
