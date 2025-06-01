@@ -16,3 +16,15 @@ export class CreateDiscussionDto {
 }
 
 export class UpdateDiscussionDto extends PartialType(CreateDiscussionDto) {}
+
+export class CreateReplyDto {
+  @IsInt()
+  @IsNotEmpty()
+  discussionId: number;
+
+  @IsString()
+  @IsNotEmpty()
+  content: string;
+}
+
+export class UpdateReplyDto extends PartialType(CreateReplyDto) {}

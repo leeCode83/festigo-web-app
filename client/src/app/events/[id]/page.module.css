@@ -244,11 +244,16 @@
   padding: 2rem 0;
 }
 
+.threadLink {
+  text-decoration: none;
+  display: block;
+  margin-bottom: 1rem;
+}
+
 .threadItem {
   background: white;
   border-radius: 8px;
   padding: 1.25rem;
-  margin-bottom: 1rem;
   transition: transform 0.2s ease;
   cursor: pointer;
   border: 1px solid #f0f0f0;
@@ -257,27 +262,40 @@
 .threadItem:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border-color: #e4e4e4;
+  border-color: #6c5ce7;
 }
 
 .threadTitle {
   font-size: 1.1rem;
   font-weight: 600;
   color: #2c3e50;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.75rem 0;
+}
+
+.threadContent {
+  color: #4a5568;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0 0 1rem 0;
 }
 
 .threadMeta {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   color: #666;
   font-size: 0.9rem;
+  gap: 1.5rem;
 }
 
 .threadMeta span {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.threadIcon {
+  color: #6c5ce7;
+  font-size: 0.9rem;
 }
 
 .loadingContainer,

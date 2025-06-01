@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import styles from './page.module.css';
 import { format } from 'date-fns';
-import { FaMapMarkerAlt, FaCalendarAlt, FaClock, FaTicketAlt } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaCalendarAlt, FaClock, FaTicketAlt, FaCommentAlt } from 'react-icons/fa';
 import Navbar from '@/components/layout/Navbar';
 import ReviewSection from '@/components/events/ReviewSection';
 
@@ -152,14 +153,17 @@ export default function EventDetail() {
                   <p className={styles.noThreads}>No discussions yet. Be the first to start a discussion!</p>
                 ) : (
                   event.threads.map((thread) => (
-                    <div key={thread.id} className={styles.threadItem}>
-                      <h3 className={styles.threadTitle}>{thread.title}</h3>
-                      <div className={styles.threadMeta}>
-                        <span>By {thread.username}</span>
-                        <span>{format(new Date(thread.createdAt), 'MMM d, yyyy')}</span>
-                        <span>{thread._count?.replies || 0} replies</span>
+                    <Link href={`/discussions/${thread.id}`} key={thread.id} className={styles.threadLink}>
+                      <div className={styles.threadItem}>
+                        <h3 className={styles.threadTitle}>{thread.title}</h3>
+                        <p className={styles.threadContent}>{thread.content.length > 150 ? `${thread.content.substring(0, 150)}...` : thread.content}</p>
+                        <div className={styles.threadMeta}>
+                          <span><FaCommentAlt className={styles.threadIcon} /> {thread._count?.replies || 0} replies</span>
+                          <span>By {thread.username}</span>
+                          <span>{format(new Date(thread.createdAt), 'MMM d, yyyy')}</span>
+                        </div>
                       </div>
-                    </div>
+                    </Link>
                   ))
                 )}
               </div>
