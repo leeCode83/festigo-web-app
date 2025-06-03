@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import styles from './page.module.css';
 import { format } from 'date-fns';
+import Cookies from 'js-cookie';
 import { FaMapMarkerAlt, FaCalendarAlt, FaClock, FaTicketAlt, FaCommentAlt } from 'react-icons/fa';
 import Navbar from '@/components/layout/Navbar';
 import ReviewSection from '@/components/events/ReviewSection';
@@ -50,6 +51,8 @@ export default function EventDetail() {
   const [event, setEvent] = useState<Event | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [eventStatus, setEventStatus] = useState<'upcoming' | 'past' | 'ongoing'>('upcoming');
+  const [newDiscussion, setNewDiscussion] = useState({ title: '', content: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchEventDetails = async () => {
     try {
@@ -148,6 +151,7 @@ export default function EventDetail() {
 
             <section className={styles.section}>
               <h2 className={styles.sectionTitle}>Discussions</h2>
+              
               <div className={styles.threadList}>
                 {(!event.threads || event.threads.length === 0) ? (
                   <p className={styles.noThreads}>No discussions yet. Be the first to start a discussion!</p>
@@ -167,6 +171,87 @@ export default function EventDetail() {
                   ))
                 )}
               </div>
+              <form
+                className={styles.discussionForm}
+                onSubmit={async (e: FormEvent) => {
+                  e.preventDefault();
+                  if (!newDiscussion.title.trim() || !newDiscussion.content.trim()) return;
+                  
+                  try {
+                    setIsSubmitting(true);
+                    const token = Cookies.get('token');
+                    if (!token) {
+                      alert('Please login to create a discussion');
+                      return;
+                    }
+                    
+                    // Check if token is expired
+                    try {
+                      const payload = JSON.parse(atob(token.split('.')[1]));
+                      if (Date.now() >= payload.exp * 1000) {
+                        Cookies.remove('token');
+                        Cookies.remove('username');
+                        alert('Your session has expired. Please login again.');
+                        return;
+                      }
+                    } catch {
+                      alert('Invalid session. Please login again.');
+                      return;
+                    }
+
+                    const response = await fetch('http://localhost:3001/discussions', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                      },
+                      body: JSON.stringify({
+                        eventId: Number(params.id),
+                        title: newDiscussion.title,
+                        content: newDiscussion.content
+                      })
+                    });
+
+                    if (!response.ok) throw new Error('Failed to create discussion');
+
+                    setNewDiscussion({ title: '', content: '' });
+                    fetchEventDetails(); // Refresh discussions list
+                  } catch (err) {
+                    console.error('Error creating discussion:', err);
+                    alert('Failed to create discussion. Please try again.');
+                  } finally {
+                    setIsSubmitting(false);
+                  }
+                }}
+              >
+                <div className={styles.formGroup}>
+                  <input
+                    type="text"
+                    placeholder="Discussion Title"
+                    className={styles.input}
+                    value={newDiscussion.title}
+                    onChange={(e) => setNewDiscussion(prev => ({ ...prev, title: e.target.value }))}
+                    required
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <textarea
+                    placeholder="Share your thoughts..."
+                    className={styles.textarea}
+                    value={newDiscussion.content}
+                    onChange={(e) => setNewDiscussion(prev => ({ ...prev, content: e.target.value }))}
+                    required
+                    rows={4}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className={styles.submitButton}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Creating...' : 'Start Discussion'}
+                </button>
+              </form>
             </section>
           </div>
 
