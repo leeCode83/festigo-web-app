@@ -33,6 +33,7 @@ model User {
   replyLikes  ReplyLike[] // Like yang diberikan pengguna pada balasan
   submissions EventSubmission[] // Event yang diajukan pengguna
   bucketlist  Bucketlist[]
+  galleries Gallery[]
 }
 
 // Enum untuk role pengguna
@@ -158,3 +159,14 @@ enum SubmissionStatus {
   APPROVED
   REJECTED
 }
+
+// Model galeri foto festival
+model Gallery {
+  id        Int      @id @default(autoincrement())
+  imageUrl  String
+  caption   String?
+  createdAt DateTime @default(now())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+

@@ -101,7 +101,11 @@ export class EventsService {
                         title: true,
                         content: true,
                         user: { select: { username: true } },
-                        createdAt: true
+                        createdAt: true,
+                        replies: true, // Keep replies if you still need the actual reply data
+                        _count: { // Add this to count replies
+                            select: { replies: true }
+                        }
                     }
                 }
             }
@@ -125,6 +129,8 @@ export class EventsService {
             content: thread.content,
             username: thread.user.username,
             createdAt: thread.createdAt,
+            replies: thread.replies, // Keep this if you still need the actual reply data
+            replyCount: thread._count?.replies ?? 0 // Add replyCount
         }));
     
         // Return a new object with flattened data

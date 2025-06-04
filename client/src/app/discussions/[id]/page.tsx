@@ -7,6 +7,7 @@ import Navbar from '@/components/layout/Navbar';
 import { format } from 'date-fns';
 import { FaUser, FaClock } from 'react-icons/fa';
 import Cookies from 'js-cookie';
+import styles from './page.module.css';
 
 interface Reply {
   id: number;
@@ -117,7 +118,7 @@ export default function DiscussionPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <Navbar />
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className={styles.container}>
         {/* Event Context */}
         <div className="mb-8">
           {thread.event && (

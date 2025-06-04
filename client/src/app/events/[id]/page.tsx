@@ -25,9 +25,7 @@ interface Thread {
   content: string;
   createdAt: string;
   username: string;
-  _count?: {
-    replies: number;
-  };
+  replyCount: number; // Updated to use replyCount directly
 }
 
 interface Event {
@@ -162,7 +160,7 @@ export default function EventDetail() {
                         <h3 className={styles.threadTitle}>{thread.title}</h3>
                         <p className={styles.threadContent}>{thread.content.length > 150 ? `${thread.content.substring(0, 150)}...` : thread.content}</p>
                         <div className={styles.threadMeta}>
-                          <span><FaCommentAlt className={styles.threadIcon} /> {thread._count?.replies || 0} replies</span>
+                          <span><FaCommentAlt className={styles.threadIcon} /> {thread.replyCount || 0} replies</span>
                           <span>By {thread.username}</span>
                           <span>{format(new Date(thread.createdAt), 'MMM d, yyyy')}</span>
                         </div>

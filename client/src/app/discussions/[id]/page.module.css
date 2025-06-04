@@ -1,0 +1,7 @@
+.container {
+  margin-top: 95px; /* Adjust this value to match your Navbar height */
+  padding: 0 2rem 2rem;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}

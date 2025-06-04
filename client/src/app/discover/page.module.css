@@ -1,0 +1,135 @@
+.mainContainer {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: var(--font-sans);
+  background-color: #f8f9fa; /* Mirip dengan .main di page.module.css root */
+  min-height: calc(100vh - 80px); /* Sesuaikan jika ada header/navbar */
+}
+
+.uploadSection {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+
+.uploadSection h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.uploadSection p {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+.uploadForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.captionInput {
+  width: 100%;
+  max-width: 500px;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  resize: vertical;
+  min-height: 80px;
+}
+
+.captionInput:focus {
+  outline: none;
+  border-color: #6c5ce7; /* Warna utama aplikasi */
+  box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.2);
+}
+
+.uploadButton {
+  background: linear-gradient(45deg, #6c5ce7, #a363d9); /* Warna utama aplikasi */
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(108, 92, 231, 0.3);
+}
+
+.uploadButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+}
+
+.errorText {
+  color: #e74c3c;
+  background-color: #fdedec;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  border: 1px solid #e74c3c;
+}
+
+.gallerySection {
+  margin-top: 2rem;
+}
+
+.gallerySection h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.galleryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.galleryItem {
+  background-color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.galleryItem:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.galleryMedia {
+  width: 100%;
+  height: 200px; /* Atur tinggi tetap untuk konsistensi */
+  object-fit: cover; /* Memastikan gambar/video mengisi area tanpa distorsi */
+  display: block;
+}
+
+.galleryCaption {
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  color: #555;
+  border-top: 1px solid #eee;
+}
+
+.galleryDate {
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  color: #888;
+  text-align: right;
+  background-color: #f9f9f9;
+}

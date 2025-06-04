@@ -102,6 +102,7 @@ export default function Navbar() {
       </Link>
       <nav className={styles.headerNav}>
         <Link href="/discover" className={styles.navLink}>Discover</Link>
+        <Link href="/" className={styles.navLink}>Home</Link>
         <div 
           className={styles.categoryDropdown}
           onMouseEnter={() => setIsDropdownOpen(true)}
@@ -122,7 +123,6 @@ export default function Navbar() {
             </div>
           )}
         </div>
-        <Link href="/calendar" className={styles.navLink}>Calendar</Link>
       </nav>
       <div className={styles.headerButtons}>
         {username ? (
