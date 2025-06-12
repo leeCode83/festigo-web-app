@@ -31,3 +31,54 @@ body {
     background-position: 100% center;
   }
 }
+
+/* Custom Styles for React Big Calendar */
+.rbc-calendar {
+  border: none;
+  font-family: inherit;
+}
+
+.rbc-toolbar {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e0e7ff;
+  padding-bottom: 1rem;
+}
+
+.rbc-toolbar button {
+  background-color: transparent !important;
+  color: #4338ca !important;
+  border: 1px solid #a5b4fc !important;
+  transition: all 0.2s ease;
+  padding: 0.5rem 1rem !important;
+  border-radius: 6px !important;
+}
+
+.rbc-toolbar button:hover, .rbc-toolbar button:focus {
+  background-color: #e0e7ff !important;
+  border-color: #6c5ce7 !important;
+}
+
+.rbc-btn-group .rbc-active {
+  background-color: #6c5ce7 !important;
+  color: white !important;
+  border-color: #6c5ce7 !important;
+}
+
+.rbc-header {
+  border: none;
+  padding: 0.75rem 0;
+  text-align: right;
+  font-weight: 600;
+  color: #4f46e5;
+}
+
+.rbc-event, .rbc-day-slot .rbc-background-event {
+  background-color: #818cf8 !important;
+  border: 1px solid #6366f1 !important;
+  border-radius: 4px !important;
+  padding: 2px 5px !important;
+}
+
+.rbc-day-bg.rbc-today {
+  background-color: #eef2ff !important;
+}

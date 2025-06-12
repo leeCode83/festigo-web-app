@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { UpdatePasswordDto, UpdateUsernameDto } from './dto/users.dto';
+import { UpdatePasswordDto, UpdateUsernameDto, UpdateAvatarDto } from './dto/users.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -12,7 +12,22 @@ export class UsersService {
             where: {id: userId},
             include: {
                 bucketlist: true,
-                reviews: true,
+                reviews: { // Ambil ulasan
+                    orderBy: { createdAt: 'desc' },
+                    include: { // Sertakan event yang diulas
+                        event: {
+                            select: { id: true, title: true }
+                        }
+                    }
+                },
+                threads: { // Ambil diskusi
+                    orderBy: { createdAt: 'desc' },
+                    include: { // Sertakan event tempat diskusi dibuat
+                        event: {
+                            select: { id: true, title: true }
+                        }
+                    }
+                }
             }
         });
         return user;
@@ -28,10 +43,45 @@ export class UsersService {
         return {
             name: user.username,
             email: user.email,
-            createAt: user.createdAt,
+            createdAt: user.createdAt,
             favorite: user.bucketlist,
-            reviews: user.reviews
+            reviews: user.reviews,
+            avatarUrl: user.avatarUrl,
+            threads: user.threads
         };
+    }
+
+    // --- FUNGSI BARU DI SINI ---
+    /**
+     * Mengambil semua item galeri untuk seorang pengguna.
+     * @param userId - ID dari pengguna yang galerinya akan diambil.
+     * @returns Array dari item galeri.
+     */
+    async getGalleryForUser(userId: number) {
+        return this.prisma.gallery.findMany({
+            where: { userId: userId },
+            orderBy: {
+                createdAt: 'desc', // Urutkan dari yang terbaru
+            },
+        });
+    }
+    
+    /**
+     * Memperbarui URL avatar untuk pengguna tertentu.
+     * @param userId - ID pengguna yang akan diperbarui.
+     * @param dto - Objek berisi avatarUrl baru.
+     */
+    async updateAvatar(userId: number, dto: UpdateAvatarDto) {
+        return this.prisma.user.update({
+            where: { id: userId },
+            data: {
+                avatarUrl: dto.avatarUrl,
+            },
+            select: { // Hanya kembalikan data yang relevan
+                id: true,
+                avatarUrl: true,
+            },
+        });
     }
 
     async updateUsername(userId: number, dto: UpdateUsernameDto){

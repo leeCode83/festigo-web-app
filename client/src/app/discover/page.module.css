@@ -1,74 +1,235 @@
+/* Latar belakang utama halaman */
 .mainContainer {
+  margin-top: 95px;
+  border-radius: 2%;
   padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
   font-family: var(--font-sans);
-  background-color: #f8f9fa; /* Mirip dengan .main di page.module.css root */
-  min-height: calc(100vh - 80px); /* Sesuaikan jika ada header/navbar */
+  background-color: #f0f2f5;
+  min-height: calc(100vh - 80px);
 }
 
+/* Bagian untuk mengunggah file */
 .uploadSection {
-  background-color: #fff;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  margin-bottom: 2.5rem;
+  background: white;
+  padding: 2.5rem;
+  border-radius: 24px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  margin-bottom: 3rem;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+}
+
+.uploadInitiator h2 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: #1c1e21;
+  margin-bottom: 0.75rem;
+}
+
+.uploadInitiator p {
+  font-size: 1.1rem;
+  color: #606770;
+  margin-bottom: 2rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.uploadButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: linear-gradient(45deg, #6c5ce7, #a363d9);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+}
+
+.uploadButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(108, 92, 231, 0.4);
+}
+
+/* Bagian pratinjau setelah file dipilih */
+.previewForm {
+  text-align: left;
+}
+
+.previewForm h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1c1e21;
+  margin-bottom: 1.5rem;
   text-align: center;
 }
 
-.uploadSection h2 {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #333;
-  margin-bottom: 0.5rem;
+.previewContent {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
 }
 
-.uploadSection p {
-  font-size: 1rem;
-  color: #666;
-  margin-bottom: 1.5rem;
+.mediaContainer {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-.uploadForm {
+.previewMedia {
+  width: 100%;
+  max-height: 450px;
+  object-fit: cover;
+  display: block;
+}
+
+.cancelButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.cancelButton:hover {
+  background: rgba(0, 0, 0, 0.8);
+  transform: scale(1.1);
+}
+
+.formFields {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 1rem;
 }
 
 .captionInput {
   width: 100%;
-  max-width: 500px;
-  padding: 0.75rem 1rem;
+  padding: 1rem;
   border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 0.95rem;
+  border-radius: 12px;
+  font-size: 1rem;
   resize: vertical;
-  min-height: 80px;
+  min-height: 150px;
+  margin-bottom: 1rem;
+  transition: all 0.2s ease;
 }
 
 .captionInput:focus {
   outline: none;
-  border-color: #6c5ce7; /* Warna utama aplikasi */
-  box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.2);
+  border-color: #6c5ce7;
+  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
 }
 
-.uploadButton {
-  background: linear-gradient(45deg, #6c5ce7, #a363d9); /* Warna utama aplikasi */
+.postButton {
+  background: #2374e1;
   color: white;
   border: none;
-  padding: 0.75rem 1.5rem;
+  padding: 1rem;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 10px rgba(108, 92, 231, 0.3);
 }
 
-.uploadButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+.postButton:hover:not(:disabled) {
+  background: #1866c9;
+}
+
+.postButton:disabled {
+  background: #a8b9cc;
+  cursor: not-allowed;
+}
+
+/* Tampilan Galeri */
+.gallerySection h2 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: #1c1e21;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.galleryGrid {
+  column-count: 4;
+  column-gap: 1rem;
+}
+
+.galleryItem {
+  margin-bottom: 1rem;
+  break-inside: avoid-column;
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.galleryItem:hover {
+  transform: scale(1.03);
+}
+
+.galleryMedia {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.galleryOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1rem;
+  color: white;
+}
+
+.galleryItem:hover .galleryOverlay {
+  opacity: 1;
+}
+
+.galleryUserInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.galleryUsername {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.galleryCaption {
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  line-height: 1.4;
 }
 
 .errorText {
@@ -76,60 +237,139 @@
   background-color: #fdedec;
   padding: 1rem;
   border-radius: 8px;
-  margin-bottom: 1.5rem;
+  margin: 0 auto 2rem;
   text-align: center;
   border: 1px solid #e74c3c;
+  max-width: 800px;
 }
 
-.gallerySection {
-  margin-top: 2rem;
-}
-
-.gallerySection h2 {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: #333;
-  margin-bottom: 1.5rem;
+.loadingText,
+.emptyText {
   text-align: center;
+  padding: 4rem 0;
+  color: #606770;
+  font-size: 1.2rem;
 }
 
-.galleryGrid {
+/* --- GAYA BARU UNTUK KALENDER --- */
+
+.calendarSection {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 24px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
 }
 
-.galleryItem {
-  background-color: #fff;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+.calendarContainer {
+  height: 600px; /* Atur tinggi kalender */
 }
 
-.galleryItem:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-}
-
-.galleryMedia {
-  width: 100%;
-  height: 200px; /* Atur tinggi tetap untuk konsistensi */
-  object-fit: cover; /* Memastikan gambar/video mengisi area tanpa distorsi */
+.calendarEventLink {
+  color: white !important;
+  text-decoration: none;
   display: block;
+  height: 100%;
 }
 
-.galleryCaption {
-  padding: 0.75rem 1rem;
-  font-size: 0.9rem;
-  color: #555;
-  border-top: 1px solid #eee;
+.eventListContainer {
+  border-left: 1px solid #e0e7ff;
+  padding-left: 2rem;
+  max-height: 600px;
+  overflow-y: auto;
 }
 
-.galleryDate {
-  padding: 0.5rem 1rem;
-  font-size: 0.8rem;
-  color: #888;
-  text-align: right;
-  background-color: #f9f9f9;
+.eventListTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #3730a3;
+  margin-bottom: 1.5rem;
+}
+
+.eventList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.eventListItem .eventLink {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+}
+
+.eventListItem .eventLink:hover {
+  background-color: #eef2ff;
+  transform: translateX(5px);
+}
+
+.eventIcon {
+  color: #6c5ce7;
+  font-size: 1.2rem;
+}
+
+.eventDetails {
+  display: flex;
+  flex-direction: column;
+}
+
+.eventTitle {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.eventDate {
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+/* Responsif untuk kalender */
+@media (max-width: 992px) {
+  .calendarSection {
+    grid-template-columns: 1fr;
+  }
+  .eventListContainer {
+    border-left: none;
+    padding-left: 0;
+    margin-top: 2rem;
+    border-top: 1px solid #e0e7ff;
+    padding-top: 2rem;
+  }
+}
+
+/* Desain Responsif */
+@media (max-width: 1200px) {
+  .galleryGrid {
+    column-count: 3;
+  }
+}
+
+@media (max-width: 992px) {
+  .galleryGrid {
+    column-count: 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .mainContainer {
+    padding: 1rem;
+  }
+  .previewContent {
+    grid-template-columns: 1fr;
+  }
+  .galleryGrid {
+    column-count: 1;
+  }
 }

@@ -1,7 +1,7 @@
-import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Request, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthGuard } from '@nestjs/passport';
-import { UpdateUsernameDto } from './dto/users.dto';
+import { UpdateAvatarDto, UpdateUsernameDto } from './dto/users.dto';
 
 @Controller('users')
 export class UsersController {
@@ -11,6 +11,19 @@ export class UsersController {
     @Get()
     async getUserById(@Request() req){
         return this.usersService.getUserInfoById(req.user.id);
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Get('me/gallery')
+    async getMyGallery(@Request() req) {
+        // Endpoint ini khusus untuk mengambil galeri milik pengguna yang sedang login
+        return this.usersService.getGalleryForUser(req.user.id);
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Patch('avatar')
+    async updateAvatar(@Request() req, @Body() dto: UpdateAvatarDto) {
+        return this.usersService.updateAvatar(req.user.id, dto);
     }
 
     @UseGuards(AuthGuard('jwt'))

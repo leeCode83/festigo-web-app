@@ -1,13 +1,8 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { FaChevronRight } from 'react-icons/fa';
 import Navbar from '@/components/layout/Navbar';
-import Hero from '@/components/common/Hero';
-import EventCard from '@/components/events/EventCard';
+import HomePageClient from '@/components/common/HomePageClient';
 import styles from './page.module.css';
 
+// Definisikan tipe data event
 interface Event {
   id: string;
   image: string;
@@ -18,85 +13,38 @@ interface Event {
   averageRating: number;
 }
 
-export default function Home() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [popularEvents, setPopularEvents] = useState<Event[]>([]);
-  const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+// Fungsi untuk mengambil data dari API
+async function getEvents(url: string): Promise<Event[]> {
+  try {
+    const res = await fetch(url, { 
+      // 'no-store' memastikan data selalu baru setiap kali halaman diakses
+      cache: 'no-store' 
+    });
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        setIsLoading(true);
-        const [popularResponse, upcomingResponse] = await Promise.all([
-          fetch('http://localhost:3001/events/popular'),
-          fetch('http://localhost:3001/events/upcoming')
-        ]);
-
-        if (!popularResponse.ok || !upcomingResponse.ok) {
-          throw new Error('Failed to fetch events');
-        }
-
-        const [popularData, upcomingData] = await Promise.all([
-          popularResponse.json(),
-          upcomingResponse.json()
-        ]);
-
-        setPopularEvents(popularData);
-        setUpcomingEvents(upcomingData);
-      } catch (error) {
-        console.error('Error fetching events:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchEvents();
-  }, []);
-
-  const renderEventSection = (title: string, events: Event[], viewAllLink: string, viewAllText: string) => (
-    <section className={styles.eventSection}>
-      <div className={styles.sectionHeader}>
-        <h2 className={styles.sectionTitle}>{title}</h2>
-        <Link href={viewAllLink} className={styles.sectionLink}>
-          {viewAllText} <FaChevronRight />
-        </Link>
-      </div>
-
-      <div className={styles.eventGrid}>
-        {events.map((event) => (
-          <Link key={event.id} href={`/events/${event.id}`} className={styles.cardLink}>
-            <EventCard
-              id={event.id}
-              image={event.image}
-              title={event.title}
-              date={event.date}
-              location={event.location}
-              averageRating={event.averageRating}
-              likes={event.likes}
-            />
-          </Link>
-        ))}
-      </div>
-    </section>
-  );
-
-  if (isLoading) {
-    return (
-      <main className={styles.main}>
-        <Navbar />
-        <Hero searchQuery={searchQuery} onSearchChange={setSearchQuery} />
-        <div className={styles.loading}>Loading events...</div>
-      </main>
-    );
+    if (!res.ok) {
+      console.error(`Failed to fetch ${url}: ${res.statusText}`);
+      return []; // Kembalikan array kosong jika gagal
+    }
+    return res.json();
+  } catch (error) {
+    console.error(`Error fetching ${url}:`, error);
+    return []; // Kembalikan array kosong jika ada error
   }
+}
+
+// Halaman utama sekarang menjadi Server Component (tanpa 'use client')
+export default async function Home() {
+  // Ambil data langsung di server
+  const popularEvents = await getEvents('http://localhost:3001/events/popular');
+  const upcomingEvents = await getEvents('http://localhost:3001/events/upcoming');
 
   return (
     <main className={styles.main}>
       <Navbar />
-      <Hero searchQuery={searchQuery} onSearchChange={setSearchQuery} />
-      {renderEventSection('Popular Right Now', popularEvents, '/popular', 'View All')}
-      {renderEventSection('Upcoming Events', upcomingEvents, '/calendar', 'View Calendar')}
+      <HomePageClient 
+        initialPopularEvents={popularEvents} 
+        initialUpcomingEvents={upcomingEvents} 
+      />
     </main>
   );
 }

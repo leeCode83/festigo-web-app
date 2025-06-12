@@ -1,12 +1,12 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+// Impor 'notFound' dari next/navigation untuk menangani halaman 404 secara programmatic
+import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from '@/components/layout/Navbar';
 import EventCard from '@/components/events/EventCard';
 import styles from './page.module.css';
 
+// --- Definisi Tipe Data ---
+// Mendefinisikan struktur objek untuk data event agar kode lebih aman dan mudah dibaca.
 interface CategoryEvent {
   id: string;
   title: string;
@@ -17,7 +17,10 @@ interface CategoryEvent {
   averageRating: number;
 }
 
-const categories = {
+// --- Metadata untuk Setiap Kategori ---
+// Objek ini menyimpan data statis untuk setiap halaman kategori,
+// seperti judul, deskripsi, dan gambar hero.
+const categoriesData = {
   music: {
     title: 'Music Events',
     description: 'Discover amazing concerts and musical performances',
@@ -31,7 +34,7 @@ const categories = {
     description: 'Explore food festivals and culinary experiences',
     longDescription: 'Immerse yourself in the world of gastronomy with our curated culinary events. From food festivals to cooking workshops, discover new flavors and culinary traditions.',
     features: ['Food Festivals', 'Cooking Workshops', 'Wine Tasting', 'Chef Meet & Greet'],
-    icon: '🍳',
+    icon: '🍲',
     heroImage: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&auto=format&fit=crop&q=80'
   },
   'pop-culture': {
@@ -39,7 +42,7 @@ const categories = {
     description: 'Join conventions, cosplay events, and more',
     longDescription: 'Celebrate your favorite fandoms at our pop culture events. Meet fellow enthusiasts, participate in cosplay competitions, and immerse yourself in the world of entertainment.',
     features: ['Comic Conventions', 'Cosplay Events', 'Fan Meetups', 'Gaming Tournaments'],
-    icon: '🌟',
+    icon: '👾',
     heroImage: 'https://images.unsplash.com/photo-1612036782180-6f0b6cd846fe?w=1600&auto=format&fit=crop&q=80'
   },
   art: {
@@ -68,67 +71,56 @@ const categories = {
   }
 };
 
-export default function CategoryPage() {
-  const params = useParams();
-  const category = params.id as string;
-  const [events, setEvents] = useState<CategoryEvent[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
+/**
+ * Fungsi ini bertanggung jawab untuk mengambil data event untuk kategori tertentu dari API.
+ * @param category - Nama kategori event yang akan diambil (misal: "music").
+ * @returns {Promise<CategoryEvent[]>} Sebuah promise yang akan resolve menjadi array objek event.
+ */
+async function getCategoryEvents(category: string): Promise<CategoryEvent[]> {
+  try {
+    const res = await fetch(`http://localhost:3001/events/category/${category}`, {
+      cache: 'no-store', // Memastikan data selalu baru
+    });
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch(`http://localhost:3001/events/category/${category}`);
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch events');
-        }
-
-        const data = await response.json();
-        setEvents(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (category) {
-      fetchEvents();
+    if (!res.ok) {
+      // Jika respons dari server tidak "OK", kita lempar error.
+      throw new Error(`Failed to fetch events for category: ${category}`);
     }
-  }, [category]);
+    return res.json();
+  } catch (error) {
+    console.error(error);
+    // Mengembalikan array kosong jika terjadi error agar halaman tidak rusak.
+    return [];
+  }
+}
 
-  if (isLoading) {
-    return (
-      <div>
-        <Navbar />
-        <div className={styles.container}>
-          <div className={styles.loading}>Loading events...</div>
-        </div>
-      </div>
-    );
+/**
+ * Halaman Detail Kategori (CategoryPage)
+ * Ini adalah Server Component yang menampilkan detail dan daftar event untuk sebuah kategori.
+ * Data diambil di server, sehingga halaman dimuat lebih cepat.
+ * @param {object} props - Properti yang diterima oleh komponen.
+ * @param {object} props.params - Parameter dinamis dari URL, berisi `id` kategori.
+ */
+export default async function CategoryPage({ params }: { params: { id: string } }) {
+  const categoryId = params.id as keyof typeof categoriesData;
+
+  // Mengambil informasi statis kategori dari objek 'categoriesData'
+  const categoryInfo = categoriesData[categoryId];
+  
+  // Jika ID kategori dari URL tidak valid (tidak ada di 'categoriesData'),
+  // tampilkan halaman 404.
+  if (!categoryInfo) {
+    notFound();
   }
 
-  if (error || !categories[category as keyof typeof categories]) {
-    return (
-      <div>
-        <Navbar />
-        <div className={styles.container}>
-          <div className={styles.error}>
-            {error || 'Category not found'}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const categoryInfo = categories[category as keyof typeof categories];
+  // Mengambil data event dari API secara asynchronous di server.
+  const events = await getCategoryEvents(categoryId);
 
   return (
     <div>
       <Navbar />
       <main className={styles.main}>
+        {/* Bagian Hero untuk menampilkan informasi utama kategori */}
         <div className={styles.categoryHero}>
           <div className={styles.heroImage} style={{ backgroundImage: `url(${categoryInfo.heroImage})` }} />
           <div className={styles.heroContent}>
@@ -138,6 +130,7 @@ export default function CategoryPage() {
           </div>
         </div>
 
+        {/* Bagian informasi detail tentang kategori */}
         <section className={styles.categoryInfo}>
           <div className={styles.infoContainer}>
             <div className={styles.aboutCategory}>
@@ -149,7 +142,7 @@ export default function CategoryPage() {
               <ul className={styles.featuresList}>
                 {categoryInfo.features.map((feature, index) => (
                   <li key={index} className={styles.featureItem}>
-                    <span className={styles.featureIcon}>✓</span>
+                    <span className={styles.featureIcon}>✔</span>
                     {feature}
                   </li>
                 ))}
@@ -158,6 +151,7 @@ export default function CategoryPage() {
           </div>
         </section>
 
+        {/* Bagian untuk menampilkan daftar event */}
         <section className={styles.eventsSection}>
           <div className={styles.sectionHeader}>
             <h2>Upcoming {categoryInfo.title}</h2>
@@ -165,26 +159,18 @@ export default function CategoryPage() {
           </div>
 
           <div className={styles.eventGrid}>
-            {events.map((event) => (
-              <Link key={event.id} href={`/events/${event.id}`} className={styles.cardLink}>
-                <EventCard
-                  id={event.id}
-                  image={event.image}
-                  title={event.title}
-                  date={event.date}
-                  location={event.location}
-                  averageRating={event.averageRating}
-                  likes={event.likes}
-                />
-              </Link>
-            ))}
+            {events.length > 0 ? (
+              events.map((event) => (
+                <Link key={event.id} href={`/events/${event.id}`} className={styles.cardLink}>
+                  <EventCard {...event} />
+                </Link>
+              ))
+            ) : (
+              <div className={styles.noEvents}>
+                No upcoming events found for this category. Check back later!
+              </div>
+            )}
           </div>
-
-          {events.length === 0 && !error && (
-            <div className={styles.noEvents}>
-              No events found for this category. Check back later!
-          </div>
-          )}
         </section>
       </main>
     </div>

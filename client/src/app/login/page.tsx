@@ -1,21 +1,33 @@
 'use client';
 
-import styles from '../../styles/signup.module.css';
+import styles from '@/styles/auth.module.css'; // MODIFIKASI: Menggunakan CSS module baru
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
+import { FaEnvelope, FaLock } from 'react-icons/fa';
 
+/**
+ * Komponen Halaman Login.
+ * Memungkinkan pengguna yang sudah ada untuk masuk ke akun mereka.
+ */
 export default function Login() {
   const router = useRouter();
+  
+  // State untuk menyimpan data form login
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
+  
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  /**
+   * Menangani perubahan pada setiap input form.
+   * @param e - Event dari input element.
+   */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -24,13 +36,19 @@ export default function Login() {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  /**
+   * Menangani proses submit form login.
+   * @param e - Event dari form submission.
+   */
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:3001/auth/login', {
+      // Menggunakan environment variable untuk URL API
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const response = await fetch(`${apiUrl}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -41,15 +59,17 @@ export default function Login() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
+        throw new Error(data.message || 'Login gagal. Periksa kembali email dan password Anda.');
       }
 
-      // Store the JWT token and username in cookies
-      Cookies.set('token', data.token, { expires: 1 }); // Token expires in 1 day
-      Cookies.set('username', data.username, { expires: 1 }); // Store username with same expiration
-      router.push('/'); // Redirect to home page
+      // Menyimpan token dan username di cookies
+      Cookies.set('token', data.token, { expires: 1 });
+      Cookies.set('username', data.username, { expires: 1 });
+      
+      // Arahkan ke halaman utama setelah login berhasil
+      router.push('/');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : 'Terjadi kesalahan.');
     } finally {
       setLoading(false);
     }
@@ -57,87 +77,70 @@ export default function Login() {
 
   return (
     <div className={styles.container}>
-      <nav className={styles.nav}>
-        <Link href="/" className={styles.logo}>
-          FestiGo
-        </Link>
-        <div className={styles.navButtons}>
-          <Link href="/signup" className={styles.joinButton}>
-            Sign Up
-          </Link>
+      {/* Kolom Kiri: Gambar Ilustrasi */}
+      <div className={styles.artSection}>
+        <Image
+          src="/images/starry-night.jpg"
+          alt="Art Exhibition"
+          fill
+          style={{ objectFit: 'cover' }}
+          priority
+        />
+        <div className={styles.artOverlay}>
+          <h2>Temukan Event Terbaikmu.</h2>
+          <p>Bergabunglah dengan ribuan pencari event lainnya.</p>
         </div>
-      </nav>
+      </div>
 
-      <div className={styles.content}>
-        <div className={styles.imageSection}>
-          <Image
-            src="/images/starry-night.jpg"
-            alt="Art Exhibition"
-            fill
-            style={{ objectFit: 'cover' }}
-            priority
-          />
-        </div>
+      {/* Kolom Kanan: Form Login */}
+      <div className={styles.formSection}>
+        <div className={styles.formContainer}>
+          <Link href="/" className={styles.logo}>FestiGo</Link>
+          <h1 className={styles.title}>Selamat Datang Kembali!</h1>
+          <p className={styles.subtitle}>Masuk untuk melanjutkan petualanganmu.</p>
 
-        <div className={styles.signupSection}>
-          <div className={styles.signupContainer}>
-            <h1 className={styles.title}>Welcome Back</h1>
-            <p className={styles.subtitle}>Sign in to continue</p>
+          {error && <div className={styles.errorBox}>{error}</div>}
 
-            {error && <div className={styles.error}>{error}</div>}
+          <form onSubmit={handleSubmit} className={styles.form}>
+            <div className={styles.inputGroup}>
+              <FaEnvelope className={styles.inputIcon} />
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                placeholder="Email"
+                className={styles.input}
+              />
+            </div>
+            
+            <div className={styles.inputGroup}>
+              <FaLock className={styles.inputIcon} />
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                placeholder="Password"
+                className={styles.input}
+              />
+            </div>
+            
+            <button type="submit" className={styles.submitButton} disabled={loading}>
+              {loading ? 'Memproses...' : 'Masuk'}
+            </button>
+          </form>
+          
+          <div className={styles.separator}>atau</div>
 
-            <form onSubmit={handleSubmit} className={styles.signupOptions}>
-              <div className={styles.inputGroup}>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  placeholder="Email"
-                  className={styles.input}
-                />
-              </div>
-              
-              <div className={styles.inputGroup}>
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  placeholder="Password"
-                  className={styles.input}
-                />
-              </div>
-              
-              <button 
-                type="submit" 
-                className={`${styles.signupButton} ${styles.submitButton}`}
-                disabled={loading}
-              >
-                {loading ? 'Signing in...' : 'Sign In'}
-              </button>
-
-              <div className={styles.loginPrompt}>
-                Don't have an account?{' '}
-                <Link href="/signup" className={styles.loginLink}>
-                  Sign up
-                </Link>
-              </div>
-
-              <p className={styles.terms}>
-                By signing in, you agree to our{' '}
-                <Link href="/terms" className={styles.termsLink}>
-                  Terms of Service
-                </Link>{' '}
-                and{' '}
-                <Link href="/privacy" className={styles.termsLink}>
-                  Privacy Policy
-                </Link>
-              </p>
-            </form>
-          </div>
+          <p className={styles.redirectPrompt}>
+            Belum punya akun?{' '}
+            <Link href="/signup" className={styles.redirectLink}>
+              Daftar sekarang
+            </Link>
+          </p>
         </div>
       </div>
     </div>

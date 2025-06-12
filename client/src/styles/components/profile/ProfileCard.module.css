@@ -1,0 +1,62 @@
+.card {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    padding: 1.25rem;
+    border-radius: 12px;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  
+  .cardLink {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .cardLink .card:hover {
+    border-color: #d0cdeb;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  }
+  
+  .cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+  
+  .rating {
+    display: flex;
+    gap: 0.25rem;
+  }
+  
+  .date {
+    font-size: 0.8rem;
+    color: #6c757d;
+  }
+  
+  .comment {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #495057;
+    margin: 0 0 1rem;
+  }
+  
+  .cardFooter {
+    font-size: 0.85rem;
+    color: #6c757d;
+  }
+  
+  .eventLink {
+    font-weight: 600;
+    color: #6c5ce7;
+    text-decoration: none;
+  }
+  .eventLink:hover {
+    text-decoration: underline;
+  }
+  
+  .cardTitle {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #343a40;
+      margin: 0 0 0.5rem;
+  }

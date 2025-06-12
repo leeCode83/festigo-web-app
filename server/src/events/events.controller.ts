@@ -61,6 +61,11 @@ export class EventsController {
         return this.eventService.getUpcomingEventsCards();
     }
 
+    @Get('upcoming/all')
+    async getAllUpcomingEvents() {
+        return this.eventService.getAllUpcomingEvents();
+    }
+
     @UseGuards(AuthGuard('jwt'))
     @Post('bucketlist/:id')
     async createBucketlist(@Request() req, @Param('id') id: number){

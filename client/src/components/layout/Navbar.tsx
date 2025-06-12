@@ -4,95 +4,46 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from '@/styles/components/layout/Navbar.module.css';
 import Cookies from 'js-cookie';
+import { FaUser, FaSignOutAlt } from 'react-icons/fa';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+  
+  // MODIFIKASI: State untuk menu pengguna
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  
   const [username, setUsername] = useState<string | undefined>();
-  const [showLogoutPopup, setShowLogoutPopup] = useState(false);
 
-  // Function to handle logout
   const handleLogout = () => {
     Cookies.remove('token');
     Cookies.remove('username');
     setUsername(undefined);
-    setShowLogoutPopup(false);
-    window.location.href = '/'; // Redirect to home page
-  };
-
-  const isTokenExpired = (token: string) => {
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      return Date.now() >= payload.exp * 1000;
-    } catch {
-      return true; // If we can't decode the token, consider it expired
-    }
-  };
-
-  // Function to check and clear tokens
-  const checkAndClearTokens = () => {
-    const currentToken = Cookies.get('token');
-    const storedUsername = Cookies.get('username');
-
-    // Clear tokens if they're missing or token is expired
-    if (!currentToken || !storedUsername || isTokenExpired(currentToken)) {
-      Cookies.remove('token');
-      Cookies.remove('username');
-      setUsername(undefined);
-      return;
-    }
-
-    setUsername(storedUsername);
+    setIsUserMenuOpen(false);
+    window.location.href = '/'; 
   };
 
   useEffect(() => {
-    checkAndClearTokens();
-
-    // Check token expiration every minute
-    const tokenCheckInterval = setInterval(checkAndClearTokens, 60000);
-
+    const storedUsername = Cookies.get('username');
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 0);
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      clearInterval(tokenCheckInterval);
     };
   }, []);
 
   const categories = [
-    {
-      title: 'Music Events',
-      icon: '🎵',
-      href: '/categories/music'
-    },
-    {
-      title: 'Culinary Events',
-      icon: '🍳',
-      href: '/categories/culinary'
-    },
-    {
-      title: 'Pop Culture',
-      icon: '🌟',
-      href: '/categories/pop-culture'
-    },
-    {
-      title: 'Art Events',
-      icon: '🎨',
-      href: '/categories/art'
-    },
-    {
-      title: 'Sports Events',
-      icon: '⚽',
-      href: '/categories/sports'
-    },
-    {
-      title: 'Educational Events',
-      icon: '📚',
-      href: '/categories/education'
-    }
+    { title: 'Music Events', href: '/categories/music' },
+    { title: 'Culinary Events', href: '/categories/culinary' },
+    { title: 'Pop Culture', href: '/categories/pop-culture' },
+    { title: 'Art Events', href: '/categories/art' },
+    { title: 'Sports Events', href: '/categories/sports' },
+    { title: 'Educational Events', href: '/categories/education' }
   ];
 
   return (
@@ -105,19 +56,15 @@ export default function Navbar() {
         <Link href="/" className={styles.navLink}>Home</Link>
         <div 
           className={styles.categoryDropdown}
-          onMouseEnter={() => setIsDropdownOpen(true)}
-          onMouseLeave={() => setIsDropdownOpen(false)}
+          onMouseEnter={() => setIsCategoryDropdownOpen(true)}
+          onMouseLeave={() => setIsCategoryDropdownOpen(false)}
         >
           <button className={styles.navLink}>Categories</button>
-          {isDropdownOpen && (
+          {isCategoryDropdownOpen && (
             <div className={styles.dropdownContent}>
               {categories.map((category) => (
-                <Link 
-                  key={category.href} 
-                  href={category.href} 
-                  className={styles.dropdownItem}
-                >
-                  {category.icon} {category.title}
+                <Link key={category.href} href={category.href} className={styles.dropdownItem}>
+                  {category.title}
                 </Link>
               ))}
             </div>
@@ -128,29 +75,24 @@ export default function Navbar() {
         {username ? (
           <div className={styles.userMenu}>
             <button 
-              onClick={() => setShowLogoutPopup(!showLogoutPopup)} 
+              onClick={() => setIsUserMenuOpen(!isUserMenuOpen)} 
               className={styles.userButton}
             >
               {username}
             </button>
-            {showLogoutPopup && (
-              <div className={styles.logoutPopup}>
-                <p>Apakah Anda ingin keluar?</p>
-                <div className={styles.logoutButtons}>
-                  <button 
-                    onClick={handleLogout}
-                    className={`${styles.logoutButton} ${styles.confirmButton}`}
-                  >
-                    Ya, Keluar
-                  </button>
-                  <button 
-                    onClick={() => setShowLogoutPopup(false)}
-                    className={`${styles.logoutButton} ${styles.cancelButton}`}
-                  >
-                    Batal
-                  </button>
-                </div>
+            {isUserMenuOpen && (
+              // --- MODIFIKASI: Dropdown Menu Baru ---
+              <div className={styles.userMenuDropdown}>
+                <Link href="/profile" className={styles.dropdownLink} onClick={() => setIsUserMenuOpen(false)}>
+                  <FaUser />
+                  <span>Profil Saya</span>
+                </Link>
+                <button onClick={handleLogout} className={`${styles.dropdownLink} ${styles.logoutButton}`}>
+                  <FaSignOutAlt />
+                  <span>Keluar</span>
+                </button>
               </div>
+              // --- AKHIR MODIFIKASI ---
             )}
           </div>
         ) : (

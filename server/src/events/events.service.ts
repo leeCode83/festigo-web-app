@@ -194,6 +194,28 @@ export class EventsService {
         });
     }
 
+    /**
+     * Mengambil semua event yang akan datang untuk ditampilkan di kalender.
+     * Hanya memilih field yang diperlukan untuk efisiensi.
+     */
+    async getAllUpcomingEvents() {
+        return this.prisma.event.findMany({
+            where: {
+                date: {
+                    gte: new Date(),
+                },
+            },
+            select: {
+                id: true,
+                title: true,
+                date: true,
+            },
+            orderBy: {
+                date: 'asc',
+            },
+        });
+    }
+
     async createBucketlist(userId: number, eventId: number){
         const existingEvent = await this.prisma.event.findUnique({
             where: { id: eventId}

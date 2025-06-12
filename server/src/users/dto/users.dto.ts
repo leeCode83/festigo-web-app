@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsString, IsUrl } from 'class-validator';
 
 export class UpdateUsernameDto {
     @IsString()
@@ -9,3 +9,9 @@ export class UpdatePasswordDto {
     @IsString()
     password: string;
 }
+
+export class UpdateAvatarDto {
+    @IsString()
+    @IsUrl()
+    avatarUrl: string;
+  }
