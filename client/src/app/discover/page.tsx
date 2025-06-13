@@ -1,18 +1,20 @@
+// leecode83/festigo-web-app/festigo-web-app-93e9d456861601624d84fe2e52fa77f3fc2214a9/client/src/app/discover/page.tsx
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+// MODIFIKASI: Menambahkan 'useCallback' dari React untuk optimasi
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import styles from './page.module.css';
 import Cookies from 'js-cookie';
 import { FaUpload, FaTimes, FaCalendarAlt } from 'react-icons/fa';
-import { Calendar, dateFnsLocalizer, Views } from 'react-big-calendar';
-import { format, parse, startOfWeek, getDay } from 'date-fns'; // MODIFIKASI: Impor date-fns yang benar
-import { enUS } from 'date-fns/locale'; // MODIFIKASI: Cara impor locale yang benar
+import { Calendar, dateFnsLocalizer, Views, View } from 'react-big-calendar'; // MODIFIKASI: Menambahkan tipe 'View'
+import { format, parse, startOfWeek, getDay } from 'date-fns';
+import { enUS } from 'date-fns/locale';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import Navbar from '@/components/layout/Navbar';
 
-// --- Konfigurasi untuk Kalender (Diperbarui) ---
+// --- Konfigurasi untuk Kalender (Tidak berubah) ---
 const locales = {
   'en-US': enUS,
 };
@@ -24,7 +26,7 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-// --- Definisi Tipe Data ---
+// --- Definisi Tipe Data (Tidak berubah) ---
 interface GalleryItem {
   id: number; imageUrl: string; caption?: string;
   user?: { username: string }; createdAt: string;
@@ -34,13 +36,13 @@ interface CalendarEvent {
 }
 
 export default function DiscoverPage() {
-  // State untuk semua data di halaman ini
+  // State untuk semua data di halaman ini (Tidak berubah)
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
   const [upcomingEvents, setUpcomingEvents] = useState<CalendarEvent[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
-  // State untuk alur unggah
+  // State untuk alur unggah (Tidak berubah)
   const [caption, setCaption] = useState('');
   const [mediaPreviewUrl, setMediaPreviewUrl] = useState<string | null>(null);
   const [mediaType, setMediaType] = useState<'image' | 'video' | null>(null);
@@ -49,7 +51,35 @@ export default function DiscoverPage() {
   const cloudinaryRef = useRef<any>();
   const widgetRef = useRef<any>();
   
-  // useEffect untuk memuat semua data dan menginisialisasi Cloudinary
+  // --- MODIFIKASI: State untuk mengontrol kalender ---
+  /**
+   * State untuk menyimpan dan mengontrol tanggal yang sedang aktif di kalender.
+   * Defaultnya adalah tanggal hari ini.
+   */
+  const [date, setDate] = useState(new Date());
+
+  /**
+   * State untuk menyimpan dan mengontrol tampilan kalender (bulan, minggu, agenda).
+   * Defaultnya adalah tampilan bulan (MONTH).
+   */
+  const [view, setView] = useState<View>(Views.MONTH);
+  // --- AKHIR MODIFIKASI STATE ---
+
+  // --- MODIFIKASI: Fungsi handler untuk interaksi kalender ---
+  /**
+   * Fungsi ini akan dipanggil oleh react-big-calendar saat pengguna mengklik tombol navigasi
+   * seperti 'Next', 'Back', atau 'Today'.
+   * @param newDate - Objek Date baru yang akan menjadi fokus kalender.
+   */
+  const onNavigate = useCallback((newDate: Date) => setDate(newDate), [setDate]);
+
+  /**
+   * Fungsi ini akan dipanggil saat pengguna mengubah tampilan, misalnya dari 'Month' ke 'Agenda'.
+   * @param newView - Tampilan baru yang dipilih oleh pengguna ('month', 'week', 'day', 'agenda').
+   */
+  const onView = useCallback((newView: View) => setView(newView), [setView]);
+  // --- AKHIR MODIFIKASI HANDLER ---
+
   useEffect(() => {
     const fetchPageData = async () => {
       setIsLoading(true);
@@ -85,7 +115,6 @@ export default function DiscoverPage() {
     
     fetchPageData();
 
-    // Inisialisasi Cloudinary Widget
     const script = document.createElement('script');
     script.src = 'https://upload-widget.cloudinary.com/global/all.js';
     script.async = true;
@@ -111,7 +140,6 @@ export default function DiscoverPage() {
     return () => { document.body.removeChild(script); };
   }, []);
   
-  // Fungsi handler untuk unggah dan posting galeri (tidak berubah)
   const handleUploadClick = () => { widgetRef.current?.open(); };
   const handleCancelPreview = () => { setMediaPreviewUrl(null); setCaption(''); };
   const handlePostSubmit = async (e: React.FormEvent) => {
@@ -126,7 +154,6 @@ export default function DiscoverPage() {
       });
       if (!response.ok) throw new Error('Gagal menyimpan unggahan.');
       setMediaPreviewUrl(null); setCaption('');
-      // Refresh galeri setelah berhasil
       const galleryRes = await fetch('http://localhost:3001/galleries');
       const galleryData = await galleryRes.json();
       setGalleryItems(galleryData.sort((a: GalleryItem, b: GalleryItem) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
@@ -152,12 +179,22 @@ export default function DiscoverPage() {
           <>
             <section className={styles.calendarSection}>
               <div className={styles.calendarContainer}>
+                {/* --- MODIFIKASI: Menambahkan props untuk menjadikan kalender terkontrol --- */}
                 <Calendar
                   localizer={localizer}
                   events={upcomingEvents}
                   views={[Views.MONTH, Views.AGENDA]}
                   style={{ height: '100%' }}
                   popup
+                  
+                  // Properti untuk mengontrol tanggal dan tampilan kalender
+                  date={date}
+                  view={view}
+                  
+                  // Fungsi handler yang akan dipanggil saat ada interaksi
+                  onNavigate={onNavigate}
+                  onView={onView}
+                  
                   components={{
                     event: ({ event }) => (
                       <Link href={`/events/${event.id}`} className={styles.calendarEventLink}>
@@ -166,6 +203,7 @@ export default function DiscoverPage() {
                     ),
                   }}
                 />
+                {/* --- AKHIR MODIFIKASI KOMPONEN KALENDER --- */}
               </div>
               <div className={styles.eventListContainer}>
                 <h3 className={styles.eventListTitle}>Upcoming Events</h3>

@@ -32,53 +32,88 @@ body {
   }
 }
 
-/* Custom Styles for React Big Calendar */
+/* Gaya Kustom untuk React Big Calendar */
 .rbc-calendar {
-  border: none;
+  border-radius: 16px;
+  border: 1px solid #e0e7ff;
   font-family: inherit;
+  background-color: white;
 }
 
 .rbc-toolbar {
   margin-bottom: 1.5rem;
   border-bottom: 1px solid #e0e7ff;
-  padding-bottom: 1rem;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.rbc-toolbar button {
+.rbc-toolbar .rbc-toolbar-label {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.rbc-btn-group button {
   background-color: transparent !important;
   color: #4338ca !important;
   border: 1px solid #a5b4fc !important;
   transition: all 0.2s ease;
   padding: 0.5rem 1rem !important;
-  border-radius: 6px !important;
+  border-radius: 8px !important;
+  cursor: pointer;
 }
 
-.rbc-toolbar button:hover, .rbc-toolbar button:focus {
+.rbc-btn-group button:hover, .rbc-btn-group button:focus {
   background-color: #e0e7ff !important;
   border-color: #6c5ce7 !important;
+  transform: translateY(-2px);
 }
 
 .rbc-btn-group .rbc-active {
   background-color: #6c5ce7 !important;
   color: white !important;
   border-color: #6c5ce7 !important;
+  box-shadow: 0 4px 10px rgba(108, 92, 231, 0.2);
 }
 
 .rbc-header {
   border: none;
   padding: 0.75rem 0;
-  text-align: right;
+  text-align: center; /* Mengubah dari right ke center */
   font-weight: 600;
   color: #4f46e5;
+  border-bottom: 1px solid #e0e7ff;
 }
 
 .rbc-event, .rbc-day-slot .rbc-background-event {
   background-color: #818cf8 !important;
   border: 1px solid #6366f1 !important;
-  border-radius: 4px !important;
-  padding: 2px 5px !important;
+  border-radius: 6px !important;
+  padding: 4px 8px !important;
+  color: white !important;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.rbc-event:hover {
+  background-color: #6c5ce7 !important;
 }
 
 .rbc-day-bg.rbc-today {
   background-color: #eef2ff !important;
+}
+
+/* Membuat sel tanggal menjadi sedikit lebih besar */
+.rbc-month-view, .rbc-time-view {
+  border-top: 1px solid #e0e7ff;
+}
+
+.rbc-day-bg {
+  border-left: 1px solid #e0e7ff;
+}
+
+.rbc-day-bg:first-child {
+  border-left: none;
 }
